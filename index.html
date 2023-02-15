@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap" rel="stylesheet">
+    <style type="text/css">
+        body {
+            background-color: white;
+            background-size: 100% 100%;
+            margin: 0;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: background-color 1s ease-out;
+            min-width: 320px;
+        }
+
+        .good {
+            background-color: #3d9317;
+        }
+
+        .neutral {
+            background-color: #505bff;
+        }
+
+        .bad {
+            background-color: #e73c7e;
+        }
+
+        .wrapper {
+            max-width: 500px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            margin: 0 auto;
+        }
+
+        .priceWrapper {
+            margin: 20px;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .price {
+            text-align: center;
+            font-size: 125px;
+            line-height: 125px;
+            font-weight: 700;
+
+        }
+
+        .time {
+            font-size: 25px;
+            font-weight: 700;
+        }
+
+        .priceText {
+            text-align: right;
+        }
+
+        .graphWrapper {
+            height: 100%;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .hourGraphWrapper,
+        .dayGraphWrapper {
+            height: 100%;
+            margin: 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: end;
+            gap: 5px;
+            flex: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            min-width: 320px;
+        }
+
+        .hourGraphWrapper {
+            overflow: hidden;
+        }
+
+        .dayGraphWrapper {
+            overflow-x: auto;
+        }
+
+        .hourGraphWrapper>div,
+        .dayGraphWrapper>div {
+            width: 100%;
+            border-radius: 4px 4px 0 0;
+            text-align: center;
+            height: 0;
+            background-color: rgba(255, 255, 255, 0.5);
+            transition: height 400ms ease-in-out;
+            min-width: calc(100%/24 - 6px);
+        }
+
+        .hourGraphWrapper>div:hover,
+        .dayGraphWrapper>div:hover {
+            background-color: white !important;
+            color: rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+        }
+
+        .current {
+            background-color: white !important;
+            color: rgba(0, 0, 0, 0.3);
+        }
+
+        .divider {
+            width: 1px !important;
+            min-width: 1px !important;
+            background: none !important;
+            border-left: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 0 !important;
+        }
+
+        .selectedPrice {
+            color: rgba(255, 255, 255, 0.5);
+            height: 24px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .buttonWrapper {
+            margin: 0 20px 20px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+        }
+
+        .button {
+            border: solid 1px white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 250ms ease-out;
+        }
+
+        .button:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+    </style>
+    <title>SPOT testi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body onload="fetchData();" id="body">
+    <div class="wrapper">
+
+        <div class="priceWrapper">
+            <div>
+                <div id="date" class="date"></div>
+                <div id="time" class="time"></div>
+                <div id="price" class="price"></div>
+                <div class="priceText">snt/kWh</div>
+            </div>
+        </div>
+        <div class="graphWrapper">
+            <span id="selectedPrice" class="selectedPrice"></span>
+            <div id="hourGraphWrapper" class="hourGraphWrapper hidden"></div>
+            <div id="dayGraphWrapper" class="dayGraphWrapper"></div>
+        </div>
+        <div class="buttonWrapper">
+            <div class="button" onclick="toggleVisibilty();">Vaihda näkymää</div>
+        </div>
+
+    </div>
+
+    <script>
+        async function fetchData() {
+            const past = new Date(Date.now() - 1 * 60 * 60 * 1000);
+            const now = new Date(Date.now());
+            const tomorrow = new Date(Date.now() + 3 * 60 * 60 * 1000);
+
+            var targetUrl = "https://sahkotin.fi/prices?start=" + past.toISOString() + "&end=" + tomorrow.toISOString();
+            const response = await fetch(targetUrl);
+            if (response.ok) {
+                const data = await response.json();
+                const price = data.prices[1].value;
+                const date = data.prices[1].date
+                document.getElementById('price').innerHTML = Math.round(price * 1.1) / 10;
+                document.getElementById('date').innerHTML = now.toLocaleDateString();
+                document.getElementById('time').innerHTML = now.toLocaleTimeString('fi-FI', {
+                    hour: "2-digit"
+                }) + ":00";
+
+                const pricesArray = []
+                for (let i = 0; i < data.prices.length; i++) {
+                    pricesArray.push(data.prices[i].value)
+                }
+                const maxPrice = Math.max(...pricesArray)
+
+                for (let i = 0; i < data.prices.length; i++) {
+                    const element = document.createElement("div");
+                    element.setAttribute("id", i);
+                    if (i == "1") {
+                        element.classList.add("current")
+                        setBackground(Math.round(data.prices[i].value * 1.1) / 10)
+                    }
+
+                    document.getElementById("hourGraphWrapper").appendChild(element);
+                    setTimeout(function() {
+                        element.innerHTML = Math.round(data.prices[i].value * 1.1) / 10
+                        element.style.height = data.prices[i].value / maxPrice * 100 + "%";
+                    }, 10);
+                }
+            }
+            fetchData2()
+        }
+        async function fetchData2() {
+            const start = new Date(Date.now());
+            start.setHours(00)
+            const end = new Date(Date.now() + 24 * 60 * 60 * 1000);
+            end.setHours(23)
+
+            const today = new Date(Date.now())
+            const currentHours = today.toLocaleTimeString('fi-FI', {
+                hour: "numeric"
+            })
+
+            var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=" + end.toISOString();
+            const response = await fetch(targetUrl);
+            if (response.ok) {
+                const data = await response.json();
+
+                const pricesArray = []
+                for (let i = 0; i < data.prices.length; i++) {
+                    pricesArray.push(data.prices[i].value)
+                }
+                const maxPrice = Math.max(...pricesArray)
+
+
+                for (let i = 0; i < data.prices.length; i++) {
+                    if (i == "24") {
+                        const divider = document.createElement("span");
+                        divider.setAttribute("class", "divider");
+                        document.getElementById("dayGraphWrapper").appendChild(divider);
+                        divider.style.height = "100%";
+                    }
+                    const element = document.createElement("div");
+                    element.setAttribute("id", i);
+
+                    element.onmouseover = function() {
+                        if (i < 24) selectHour(i, i + ":00 - " + Math.round(data.prices[i].value * 1.1) / 10 + "snt/kWh");
+                        else selectHour(i, i-24 + ":00 - " + Math.round(data.prices[i].value * 1.1) / 10 + "snt/kWh");
+                    };
+                    element.onmouseout = function() {
+                        emptySelectedHour()
+                    };
+                    document.getElementById("dayGraphWrapper").appendChild(element);
+                    setTimeout(function() {
+                        element.style.height = data.prices[i].value / maxPrice * 100 + "%";
+                    }, 10);
+                }
+            }
+            document.getElementById(currentHours).classList.add("current")
+
+        }
+
+        function toggleVisibilty() {
+            const hours = document.getElementById("hourGraphWrapper")
+            const day = document.getElementById("dayGraphWrapper")
+
+            for (const child of hours.children) {
+                child.style.height = "0";
+            }
+            for (const child of day.children) {
+                child.style.height = "0";
+            }
+
+            setTimeout(function() {
+                hours.classList.toggle("hidden")
+                day.classList.toggle("hidden")
+                hours.innerHTML = '';
+                day.innerHTML = '';
+                fetchData()
+            }, 400);
+        }
+
+        function selectHour(hour, priceText) {
+            document.getElementById("selectedPrice").innerHTML = priceText;
+        }
+
+        function emptySelectedHour() {
+            document.getElementById("selectedPrice").innerHTML = "";
+        }
+
+        function setBackground(value) {
+            const body = document.getElementById("body")
+
+            if (value < 6) {
+                body.classList.add("good")
+            } else if (value > 11) {
+                body.classList.add("bad")
+            } else {
+                body.classList.add("neutral")
+            }
+        }
+
+    </script>
+
+
+</body>
+
+</html>
