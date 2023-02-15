@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style type="text/css">
+        body {
+            font-family: sans-serif;
+            transition: all 500ms;
+        }
+
+        .lightTheme {
+            background: white;
+            color: black;
+        }
+
+        .lightTheme .button {
+            border: solid 1px black;
+        }
+
+        .lightTheme .button.selected {
+            background: lightblue;
+        }
+
+        .darkTheme {
+            background: black;
+            color: white;
+        }
+
+        .darkTheme .button {
+            border: solid 1px white;
+        }
+
+        .darkTheme .button.selected {
+            background: darkblue;
+        }
+
+        .wrapper {
+            width: 100%;
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 60px);
+        }
+
+        .buttonWrapper {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .button {
+            padding: 8px 16px;
+            border-radius: 4px;
+            margin-right: 8px;
+            cursor: pointer;
+
+            transition: background 500ms;
+        }
+
+        .button:last-of-type {
+            margin-right: 0;
+        }
+
+        .button:hover {
+            background: lightgray;
+        }
+
+        .button.selected {
+            border-width: 2px;
+            font-weight: 700;
+        }
+
+        .priceNowWrapper,
+        .graphWrapper,
+        .settingsWrapper {
+            width: 100%;
+            flex: 1;
+            align-items: center;
+            display: flex;
+            justify-content: center;
+        }
+
+        .priceNow {
+            font-size: 120px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .priceNowPrefix {
+            font-size: 20px;
+            margin-left: 15px;
+        }
+
+        .graphWrapper {
+            display: flex;
+            align-items: baseline;
+        }
+
+        .graphWrapper>div {
+            width: calc(100% / 24);
+        }
+
+        .lightTheme .graphWrapper>div {
+            background: lightblue;
+            border: solid 1px blue;
+        }
+
+        .darkTheme .graphWrapper>div {
+            background: darkblue;
+            border: solid 1px lightblue;
+        }
+
+        .settingsWrapper {}
+
+        .hidden {
+            display: none;
+        }
+
+    </style>
+    <title>SPOT testi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body onload="fetchData();" id="body" class="lightTheme">
+    <div class="wrapper">
+        <div class="buttonWrapper">
+            <div id="priceButton" class="button selected" onclick=showPrice()>Etusivu</div>
+            <div id="graphButton" class="button" onclick=showGraph()>Mittari</div>
+            <div id="" class="button">Sähköliittymä</div>
+            <div id="settingsButton" class="button" onclick=showSettings()>Asetukset</div>
+        </div>
+        <div id="priceNowWrapper" class="priceNowWrapper">
+            <div id="priceNow" class="priceNow"></div>
+            <div class="priceNowPrefix">snt/kWh</div>
+        </div>
+        <div id="graphWrapper" class="graphWrapper hidden">
+        </div>
+        <div id="settingsWrapper" class="settingsWrapper hidden">
+            <div class="settingsWrapper2">
+                <div>Valitse taustaväri:</div>
+                <div class="buttonWrapper">
+                    <div id="lightButton" class="button selected" onclick=setTheme("light")>Vaalea</div>
+                    <div id="darkButton" class="button" onclick=setTheme("dark")>Tumma</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        async function fetchData() {
+            const now = new Date(Date.now());
+
+            var targetUrl = "https://sahkotin.fi/prices?start=" + now.toISOString() + "&end=" + now.toISOString();
+            const response = await fetch(targetUrl);
+            if (response.ok) {
+                const data = await response.json();
+                const price = data.prices[0].value;
+                document.getElementById("priceNow").innerHTML = Math.round(price * 1.1) / 10;
+            }
+            fetchGraphData()
+        }
+
+        async function fetchGraphData() {
+            const start = new Date(Date.now());
+            start.setHours(00)
+            const end = new Date(Date.now());
+            end.setHours(23)
+
+            var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=" + end.toISOString();
+            const response = await fetch(targetUrl);
+            if (response.ok) {
+                const data = await response.json();
+
+                for (let i = 0; i < data.prices.length; i++) {
+                    const element = document.createElement("div");
+                    element.setAttribute("id", i);
+                    document.getElementById("graphWrapper").appendChild(element);
+                    setTimeout(function() {
+                        element.style.height = data.prices[i].value / 3 + "%";
+                    }, 10);
+                }
+            }
+        }
+
+        function showPrice() {
+            document.getElementById("priceNowWrapper").classList.remove("hidden")
+            document.getElementById("priceButton").classList.add("selected")
+            document.getElementById("graphWrapper").classList.add("hidden")
+            document.getElementById("graphButton").classList.remove("selected")
+            document.getElementById("settingsWrapper").classList.add("hidden")
+            document.getElementById("settingsButton").classList.remove("selected")
+        }
+
+        function showGraph() {
+            document.getElementById("priceNowWrapper").classList.add("hidden")
+            document.getElementById("priceButton").classList.remove("selected")
+            document.getElementById("graphWrapper").classList.remove("hidden")
+            document.getElementById("graphButton").classList.add("selected")
+            document.getElementById("settingsWrapper").classList.add("hidden")
+            document.getElementById("settingsButton").classList.remove("selected")
+        }
+
+        function showSettings() {
+            document.getElementById("priceNowWrapper").classList.add("hidden")
+            document.getElementById("priceButton").classList.remove("selected")
+            document.getElementById("graphWrapper").classList.add("hidden")
+            document.getElementById("graphButton").classList.remove("selected")
+            document.getElementById("settingsWrapper").classList.remove("hidden")
+            document.getElementById("settingsButton").classList.add("selected")
+        }
+
+        function setTheme(type) {
+            const body = document.getElementById("body")
+            console.log(body)
+            if (type === "light") {
+                body.classList.add("lightTheme")
+                body.classList.remove("darkTheme")
+                document.getElementById("lightButton").classList.add("selected")
+                document.getElementById("darkButton").classList.remove("selected")
+            }
+            if (type === "dark") {
+                body.classList.remove("lightTheme")
+                body.classList.add("darkTheme")
+                document.getElementById("lightButton").classList.remove("selected")
+                document.getElementById("darkButton").classList.add("selected")
+            }
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>
