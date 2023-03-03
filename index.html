@@ -74,8 +74,8 @@
             flex: 1;
         }
 
-        .hourGraphWrapper,
-        .dayGraphWrapper {
+        .priceGraphWrapper,
+        .fullPriceGraphWrapper {
             height: 100%;
             margin: 20px;
             display: flex;
@@ -88,16 +88,12 @@
             min-width: 320px;
         }
 
-        .hourGraphWrapper {
-            overflow: hidden;
-        }
-
-        .dayGraphWrapper {
+        .fullPriceGraphWrapper,
+        .priceGraphWrapper {
             overflow-x: auto;
         }
 
-        .hourGraphWrapper>div,
-        .dayGraphWrapper>div {
+        .priceGraphWrapper>div {
             width: 100%;
             border-radius: 4px 4px 0 0;
             text-align: center;
@@ -105,12 +101,37 @@
             background-color: rgba(255, 255, 255, 0.5);
             transition: height 400ms ease-in-out;
             min-width: calc(100%/24 - 6px);
+            box-sizing: border-box;
         }
 
-        .hourGraphWrapper>div:hover,
-        .dayGraphWrapper>div:hover {
-            background-color: white !important;
-            color: rgba(0, 0, 0, 0.3);
+        .fullPriceGraphWrapper>div {
+            width: 100%;
+            border-radius: 4px 4px 0 0;
+            height: 0;
+            transition: height 400ms ease-in-out;
+            min-width: calc(100%/24 - 6px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fullPriceGraphWrapper>div>.bottom {
+            background-color: rgba(255, 255, 255, 0.5);
+            height: auto;
+            display: flex;
+            flex: 1;
+        }
+
+        .fullPriceGraphWrapper>div>.top {
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 4px 4px 0 0;
+            display: flex;
+        }
+
+        .priceGraphWrapper>div:hover,
+        .fullPriceGraphWrapper>div:hover {
+            background-color: rgba(255, 255, 255, 0.8) !important;
             cursor: pointer;
         }
 
@@ -161,7 +182,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<body onload="fetchData();" id="body">
+<body onload="fetchData(), fetchGraphPrices()" id="body">
     <div class="wrapper">
 
         <div class="priceWrapper">
@@ -174,8 +195,8 @@
         </div>
         <div class="graphWrapper">
             <span id="selectedPrice" class="selectedPrice"></span>
-            <div id="hourGraphWrapper" class="hourGraphWrapper hidden"></div>
-            <div id="dayGraphWrapper" class="dayGraphWrapper"></div>
+            <div id="priceGraphWrapper" class="priceGraphWrapper"> </div>
+            <div id="fullPriceGraphWrapper" class="fullPriceGraphWrapper hidden"> </div>
         </div>
         <div class="buttonWrapper">
             <div class="button" onclick="toggleVisibilty();">Vaihda näkymää</div>
@@ -185,46 +206,22 @@
 
     <script>
         async function fetchData() {
-            const past = new Date(Date.now() - 1 * 60 * 60 * 1000);
             const now = new Date(Date.now());
-            const tomorrow = new Date(Date.now() + 3 * 60 * 60 * 1000);
 
-            var targetUrl = "https://sahkotin.fi/prices?start=" + past.toISOString() + "&end=" + tomorrow.toISOString();
+            var targetUrl = "https://sahkotin.fi/prices?start=" + now.toISOString() + "&end=" + now.toISOString();
             const response = await fetch(targetUrl);
             if (response.ok) {
                 const data = await response.json();
-                const price = data.prices[1].value;
-                const date = data.prices[1].date
+                const price = data.prices[0].value;
                 document.getElementById('price').innerHTML = Math.round(price * 1.1) / 10;
                 document.getElementById('date').innerHTML = now.toLocaleDateString();
                 document.getElementById('time').innerHTML = now.toLocaleTimeString('fi-FI', {
                     hour: "2-digit"
                 }) + ":00";
-
-                const pricesArray = []
-                for (let i = 0; i < data.prices.length; i++) {
-                    pricesArray.push(data.prices[i].value)
-                }
-                const maxPrice = Math.max(...pricesArray)
-
-                for (let i = 0; i < data.prices.length; i++) {
-                    const element = document.createElement("div");
-                    element.setAttribute("id", i);
-                    if (i == "1") {
-                        element.classList.add("current")
-                        setBackground(Math.round(data.prices[i].value * 1.1) / 10)
-                    }
-
-                    document.getElementById("hourGraphWrapper").appendChild(element);
-                    setTimeout(function() {
-                        element.innerHTML = Math.round(data.prices[i].value * 1.1) / 10
-                        element.style.height = data.prices[i].value / maxPrice * 100 + "%";
-                    }, 10);
-                }
+                setBackground(Math.round(price * 1.1) / 10)
             }
-            fetchData2()
         }
-        async function fetchData2() {
+        async function fetchGraphPrices() {
             const start = new Date(Date.now());
             start.setHours(00)
             const end = new Date(Date.now() + 24 * 60 * 60 * 1000);
@@ -251,7 +248,7 @@
                     if (i == "24") {
                         const divider = document.createElement("span");
                         divider.setAttribute("class", "divider");
-                        document.getElementById("dayGraphWrapper").appendChild(divider);
+                        document.getElementById("priceGraphWrapper").appendChild(divider);
                         divider.style.height = "100%";
                     }
                     const element = document.createElement("div");
@@ -259,14 +256,83 @@
 
                     element.onmouseover = function() {
                         if (i < 24) selectHour(i, i + ":00 - " + Math.round(data.prices[i].value * 1.1) / 10 + "snt/kWh");
-                        else selectHour(i, i-24 + ":00 - " + Math.round(data.prices[i].value * 1.1) / 10 + "snt/kWh");
+                        else selectHour(i, i - 24 + ":00 - " + Math.round(data.prices[i].value * 1.1) / 10 + "snt/kWh");
                     };
                     element.onmouseout = function() {
                         emptySelectedHour()
                     };
-                    document.getElementById("dayGraphWrapper").appendChild(element);
+                    document.getElementById("priceGraphWrapper").appendChild(element);
                     setTimeout(function() {
                         element.style.height = data.prices[i].value / maxPrice * 100 + "%";
+                    }, 10);
+                }
+            }
+            document.getElementById(currentHours).classList.add("current")
+        }
+
+        async function fetchGraphFullPrices() {
+            const start = new Date(Date.now());
+            start.setHours(00)
+            const end = new Date(Date.now() + 24 * 60 * 60 * 1000);
+            end.setHours(23)
+
+            const today = new Date(Date.now())
+            const currentHours = today.toLocaleTimeString('fi-FI', {
+                hour: "numeric"
+            })
+
+            const dayPrice = 6.21372
+            const nightPrice = 4.41372
+
+            var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=" + end.toISOString();
+            const response = await fetch(targetUrl);
+            if (response.ok) {
+                const data = await response.json();
+
+                const pricesArray = []
+                for (let i = 0; i < data.prices.length; i++) {
+                    pricesArray.push(Math.round(data.prices[i].value * 1.1) / 10)
+                }
+                const maxPrice = Math.max(...pricesArray) + dayPrice
+
+                for (let i = 0; i < data.prices.length; i++) {
+                    if (i == "24") {
+                        const divider = document.createElement("span");
+                        divider.setAttribute("class", "divider");
+                        document.getElementById("fullPriceGraphWrapper").appendChild(divider);
+                        divider.style.height = "100%";
+                    }
+                    const element = document.createElement("div");
+                    element.setAttribute("id", i);
+                    const top = document.createElement("div");
+                    top.classList.add("top");
+                    const bottom = document.createElement("div")
+                    bottom.classList.add("bottom");
+
+                    let value = Math.round(data.prices[i].value * 1.1 / 10 + dayPrice)
+                    if (i < 7 || i > 21) Math.round(data.prices[i].value * 1.1 / 10 + nightPrice)
+
+
+                    element.onmouseover = function() {
+                        if (i < 24) selectHour(i, i + ":00 - " + value + "snt/kWh");
+                        else selectHour(i, i - 24 + ":00 - " + value + "snt/kWh");
+                    };
+                    element.onmouseout = function() {
+                        emptySelectedHour()
+                    };
+
+                    document.getElementById("fullPriceGraphWrapper").appendChild(element);
+                    document.getElementById(i).appendChild(top);
+                    document.getElementById(i).appendChild(bottom);
+
+                    let wrapperHeight = (Math.round(data.prices[i].value * 1.1) / 10 + dayPrice) / maxPrice * 100
+                    let topHeight = dayPrice / maxPrice * 100
+
+                    if (i < 7 || i > 21) topHeight = nightPrice / maxPrice * 100
+
+                    setTimeout(function() {
+                        element.style.height = wrapperHeight + "%";
+                        top.style.height = topHeight + "%";
                     }, 10);
                 }
             }
@@ -275,8 +341,8 @@
         }
 
         function toggleVisibilty() {
-            const hours = document.getElementById("hourGraphWrapper")
-            const day = document.getElementById("dayGraphWrapper")
+            const hours = document.getElementById("priceGraphWrapper")
+            const day = document.getElementById("fullPriceGraphWrapper")
 
             for (const child of hours.children) {
                 child.style.height = "0";
@@ -290,7 +356,9 @@
                 day.classList.toggle("hidden")
                 hours.innerHTML = '';
                 day.innerHTML = '';
-                fetchData()
+
+                if (hours.classList.contains("hidden")) fetchGraphFullPrices()
+                if (day.classList.contains("hidden")) fetchGraphPrices()
             }, 400);
         }
 
