@@ -331,7 +331,7 @@
                     let wrapperHeight = (Math.round(data.prices[i].value * 1.1) / 10 + dayPrice) / maxPrice * 100
                     let topHeight = dayPrice / maxPrice * 100
 
-                    if (i < 7 || i > 21) topHeight = nightPrice / maxPrice * 100
+                    if (nightPriceTimes.includes(i)) topHeight = nightPrice / maxPrice * 100
 
                     setTimeout(function() {
                         element.style.height = wrapperHeight + "%";
