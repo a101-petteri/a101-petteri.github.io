@@ -327,15 +327,24 @@
                     document.getElementById("fullPriceGraphWrapper").appendChild(element);
                     document.getElementById(i).appendChild(top);
                     document.getElementById(i).appendChild(bottom);
+                    
 
                     let wrapperHeight = (Math.round(data.prices[i].value * 1.1) / 10 + dayPrice) / maxPrice * 100
-                    let topHeight = dayPrice / maxPrice * 100
-
-                    if (nightPriceTimes.includes(i)) topHeight = nightPrice / maxPrice * 100
+                    const maxHeight = document.getElementById("fullPriceGraphWrapper").clientHeight
+                    let topHeight = maxHeight / maxPrice * dayPrice
+                    
+                    console.log()
+                    
+                    if (nightPriceTimes.includes(i)) {
+                        wrapperHeight = (Math.round(data.prices[i].value * 1.1) / 10 + nightPrice) / maxPrice * 100
+                        topHeight = maxHeight / maxPrice * nightPrice
+                    }
+                    
+                    console.log(topHeight)
 
                     setTimeout(function() {
                         element.style.height = wrapperHeight + "%";
-                        top.style.height = topHeight + "%";
+                        top.style.height = topHeight + "px";
                     }, 10);
                 }
             }
