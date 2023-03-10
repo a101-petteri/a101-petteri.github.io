@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style type="text/css">
+        body {
+            font: sans-serif;
+            font-size: 25px;
+            padding: 50px 20px;
+            text-align: center;
+        }
+        div {
+            margin-bottom: 20px;
+        }
+
+    </style>
+    <title>qwertyu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body onload="load()" id="body">
+    <div id="agent"></div>
+    <div id="result"></div>
+
+    <script>
+        function load() {
+            const userAgent = window.navigator.userAgent
+            document.getElementById("agent").innerHTML = userAgent
+            const isWebView = isWebview(userAgent)
+            document.getElementById("result").innerHTML = isWebView
+        }
+
+        function isWebview(userAgent) {
+            return /webview|wv|ip((?!.*Safari)|(?=.*like Safari))/i.test(userAgent);
+        };
+
+    </script>
+
+
+</body>
+
+</html>
