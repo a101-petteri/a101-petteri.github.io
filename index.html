@@ -232,7 +232,7 @@
                 hour: "numeric"
             })
 
-            var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=" + end.toISOString();
+            var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2023-12-31T22:00:00.000Z";
             const response = await fetch(targetUrl);
             if (response.ok) {
                 const data = await response.json();
@@ -245,7 +245,7 @@
 
 
                 for (let i = 0; i < data.prices.length; i++) {
-                    if (i == "24") {
+                    if (i == "24" || i == "48") {
                         const divider = document.createElement("span");
                         divider.setAttribute("class", "divider");
                         document.getElementById("priceGraphWrapper").appendChild(divider);
@@ -285,7 +285,7 @@
             const nightPrice = 4.41372
             const nightPriceTimes = [0, 1, 2, 3, 4, 5, 6, 22, 23, 24, 25, 26, 27, 28, 29, 30, 46, 47]
 
-            var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=" + end.toISOString();
+            var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2023-12-31T22:00:00.000Z";
             const response = await fetch(targetUrl);
             if (response.ok) {
                 const data = await response.json();
@@ -297,7 +297,7 @@
                 const maxPrice = Math.max(...pricesArray) + dayPrice
 
                 for (let i = 0; i < data.prices.length; i++) {
-                    if (i == "24") {
+                    if (i == "24" || i == "48") {
                         const divider = document.createElement("span");
                         divider.setAttribute("class", "divider");
                         document.getElementById("fullPriceGraphWrapper").appendChild(divider);
@@ -327,19 +327,17 @@
                     document.getElementById("fullPriceGraphWrapper").appendChild(element);
                     document.getElementById(i).appendChild(top);
                     document.getElementById(i).appendChild(bottom);
-                    
+
 
                     let wrapperHeight = (Math.round(data.prices[i].value * 1.1) / 10 + dayPrice) / maxPrice * 100
                     const maxHeight = document.getElementById("fullPriceGraphWrapper").clientHeight
                     let topHeight = maxHeight / maxPrice * dayPrice
-                    
-                    console.log()
-                    
+
                     if (nightPriceTimes.includes(i)) {
                         wrapperHeight = (Math.round(data.prices[i].value * 1.1) / 10 + nightPrice) / maxPrice * 100
                         topHeight = maxHeight / maxPrice * nightPrice
                     }
-                    
+
                     console.log(topHeight)
 
                     setTimeout(function() {
