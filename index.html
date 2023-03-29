@@ -37,7 +37,7 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            height:  calc(100% - 110px);
+            height: calc(100% - 110px);
             margin: 0 auto;
         }
 
@@ -209,9 +209,17 @@
             text-align: center;
         }
 
+        td.icon {
+            width: auto !important;
+        }
+
         .priceTableWrapper>table>tbody>tr.current>td {
             background-color: white !important;
             color: rgba(0, 0, 0, 0.5);
+        }
+
+        .priceTableWrapper>table>tbody>tr.nightRow>td {
+            background-color: rgba(0, 0, 0, 0.1);
         }
 
     </style>
@@ -329,7 +337,7 @@
 
             const dayPrice = 6.21372
             const nightPrice = 4.41372
-            const nightPriceTimes = [0, 1, 2, 3, 4, 5, 6, 22, 23, 24, 25, 26, 27, 28, 29, 30, 46, 47]
+            const nightPriceTimes = [0, 1, 2, 3, 4, 5, 6, 22, 23, 24, 25, 26, 27, 28, 29, 30, 46, 47, 48]
 
             var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2023-12-31T22:00:00.000Z";
             const response = await fetch(targetUrl);
@@ -408,7 +416,7 @@
 
             const dayPrice = 6.21372
             const nightPrice = 4.41372
-            const nightPriceTimes = [0, 1, 2, 3, 4, 5, 6, 22, 23, 24, 25, 26, 27, 28, 29, 30, 46, 47]
+            const nightPriceTimes = [0, 1, 2, 3, 4, 5, 6, 22, 23, 24, 25, 26, 27, 28, 29, 30, 46, 47, 48]
 
             var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2023-12-31T22:00:00.000Z";
             const response = await fetch(targetUrl);
@@ -425,22 +433,27 @@
                 for (let i = 0; i < data.prices.length; i++) {
                     const element = document.createElement("tr");
                     element.setAttribute("id", i);
-                    
+
                     let hours = i
                     if (i > 23) hours = i - 24
-                    else if( i > 47) hours = i - 48
+                    else if (i > 47) hours = i - 48
 
                     const price = data.prices[i].value * 1.1 / 10
 
                     let value = data.prices[i].value * 1.1 / 10 + dayPrice
+                    let icon = "☀️"
                     if (nightPriceTimes.includes(i)) {
                         value = data.prices[i].value * 1.1 / 10 + nightPrice
+                        icon = "🌙"
                     }
 
-                    let row = "<td>" + hours + ":00</td><td>" + price.toFixed(2) + "</td><td>" + value.toFixed(2) + "</td>";
+                    let row = "<td class=\"icon\">" + icon + "</td><td>" + hours + ":00</td><td>" + price.toFixed(2) + "</td><td>" + value.toFixed(2) + "</td>";
                     var tbody = document.querySelector("#priceTable tbody");
                     var tr = document.createElement("tr");
                     tr.setAttribute("id", "tr" + i);
+                    if (nightPriceTimes.includes(i)) {
+                        tr.classList.add("nightRow")
+                    }
 
                     tr.innerHTML = row;
                     tbody.appendChild(tr)
@@ -512,6 +525,7 @@
                     fetchGraphFullPrices()
                 }
                 if (type == 'table') {
+                    document.getElementById("priceButton").classList.remove("selected")
                     document.getElementById("fullPriceButton").classList.remove("selected")
                     document.getElementById("tableButton").classList.add("selected")
                     priceWrapper.classList.add("hidden")
