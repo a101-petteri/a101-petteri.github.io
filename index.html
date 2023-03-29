@@ -195,6 +195,8 @@
             overflow-y: auto;
             display: flex;
             flex: 1;
+            opacity: 1;
+            transition: opacity 400ms ease-in-out;
         }
 
         .priceTableWrapper>table {
@@ -227,7 +229,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<body onload="fetchData(), fetchGraphPrices(), fetchPricesTable()" id="body">
+<body onload="fetchData(), fetchGraphPrices()" id="body">
     <div class="wrapper">
 
         <div class="priceWrapper">
@@ -249,7 +251,7 @@
                 </table>
             </div>
         </div>
-        <div class="buttonWrapper">
+        <div id="buttonWrapper" class="buttonWrapper hidden">
             <div id="priceButton" class="button selected" onclick="setVisibility('price');">Price</div>
             <div id="fullPriceButton" class="button" onclick="setVisibility('fullPrice');">Full price</div>
             <div id="tableButton" class="button" onclick="setVisibility('table');">Table</div>
@@ -266,7 +268,7 @@
             if (response.ok) {
                 const data = await response.json();
                 const price = data.prices[0].value;
-                document.getElementById('price').innerHTML = Math.round(price * 1.1) / 10;
+                document.getElementById('price').innerHTML = (price * 1.1 / 10).toFixed(1);
                 document.getElementById('date').innerHTML = now.toLocaleDateString();
                 document.getElementById('time').innerHTML = now.toLocaleTimeString('fi-FI', {
                     hour: "2-digit"
@@ -308,9 +310,9 @@
                     element.setAttribute("id", i);
 
                     element.onmouseover = function() {
-                        if (i < 24) selectHour(i, i + ":00 - " + Math.round(data.prices[i].value * 1.1) / 10 + "snt/kWh");
-                        else if (i >= 48) selectHour(i, i - 48 + ":00 - " + Math.round(data.prices[i].value * 1.1) / 10 + "snt/kWh");
-                        else selectHour(i, i - 24 + ":00 - " + Math.round(data.prices[i].value * 1.1) / 10 + "snt/kWh");
+                        if (i < 24) selectHour(i, i + ":00 - " + (data.prices[i].value * 1.1 / 10).toFixed(1) + "snt/kWh");
+                        else if (i >= 48) selectHour(i, i - 48 + ":00 - " + (data.prices[i].value * 1.1 / 10).toFixed(1) + "snt/kWh");
+                        else selectHour(i, i - 24 + ":00 - " + (data.prices[i].value * 1.1 / 10).toFixed(1) + "snt/kWh");
                     };
                     element.onmouseout = function() {
                         emptySelectedHour()
@@ -364,9 +366,9 @@
                     const bottom = document.createElement("div")
                     bottom.classList.add("bottom");
 
-                    let value = Math.round(data.prices[i].value * 1.1 / 10 + dayPrice)
+                    let value = (data.prices[i].value * 1.1 / 10 + dayPrice).toFixed(1)
                     if (nightPriceTimes.includes(i)) {
-                        value = Math.round(data.prices[i].value * 1.1 / 10 + nightPrice)
+                        value = (data.prices[i].value * 1.1 / 10 + nightPrice).toFixed(1)
                     }
 
 
@@ -499,6 +501,7 @@
             for (const child of fullPriceWrapper.children) {
                 child.style.height = "0";
             }
+            tableWrapper.style.opacity = 0
 
             setTimeout(function() {
                 priceWrapper.innerHTML = '';
@@ -513,6 +516,7 @@
                     priceWrapper.classList.remove("hidden")
                     fullPriceWrapper.classList.add("hidden")
                     tableWrapper.classList.add("hidden")
+                    document.getElementById("selectedPrice").classList.remove("hidden")
                     fetchGraphPrices()
                 }
                 if (type == 'fullPrice') {
@@ -522,6 +526,7 @@
                     priceWrapper.classList.add("hidden")
                     fullPriceWrapper.classList.remove("hidden")
                     tableWrapper.classList.add("hidden")
+                    document.getElementById("selectedPrice").classList.remove("hidden")
                     fetchGraphFullPrices()
                 }
                 if (type == 'table') {
@@ -531,6 +536,8 @@
                     priceWrapper.classList.add("hidden")
                     fullPriceWrapper.classList.add("hidden")
                     tableWrapper.classList.remove("hidden")
+                    tableWrapper.style.opacity = 1
+                    document.getElementById("selectedPrice").classList.add("hidden")
                     fetchPricesTable()
                 }
             }, 400);
@@ -554,6 +561,8 @@
             } else {
                 body.classList.add("neutral")
             }
+
+            document.getElementById("buttonWrapper").classList.remove("hidden")
         }
 
     </script>
