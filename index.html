@@ -194,6 +194,7 @@
             min-width: 320px;
             overflow-y: auto;
             display: flex;
+            flex-direction: column;
             flex: 1;
             opacity: 1;
             transition: opacity 400ms ease-in-out;
@@ -249,6 +250,7 @@
                     <tbody>
                     </tbody>
                 </table>
+                <div>Day: <span id="dayPriceLegend"></span> // Night: <span id="nightPriceLegend"></span></div>
             </div>
         </div>
         <div id="buttonWrapper" class="buttonWrapper hidden">
@@ -274,6 +276,9 @@
                     hour: "2-digit"
                 }) + ":00";
                 setBackground(Math.round(price * 1.24) / 10)
+
+                document.getElementById('dayPriceLegend').innerHTML = getDayPrice()
+                document.getElementById('nightPriceLegend').innerHTML = getNightPrice()
             }
         }
         async function fetchGraphPrices() {
@@ -337,9 +342,9 @@
                 hour: "numeric"
             })
 
-            const dayPrice = 6.21372
-            const nightPrice = 4.41372
-            const nightPriceTimes = [0, 1, 2, 3, 4, 5, 6, 22, 23, 24, 25, 26, 27, 28, 29, 30, 46, 47, 48]
+            const dayPrice = getDayPrice()
+            const nightPrice = getNightPrice()
+            const nightPriceTimes = getNightHours()
 
             var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2023-12-31T22:00:00.000Z";
             const response = await fetch(targetUrl);
@@ -416,9 +421,9 @@
                 hour: "numeric"
             })
 
-            const dayPrice = 6.21372
-            const nightPrice = 4.41372
-            const nightPriceTimes = [0, 1, 2, 3, 4, 5, 6, 22, 23, 24, 25, 26, 27, 28, 29, 30, 46, 47, 48]
+            const dayPrice = getDayPrice()
+            const nightPrice = getNightPrice()
+            const nightPriceTimes = getNightHours()
 
             var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2023-12-31T22:00:00.000Z";
             const response = await fetch(targetUrl);
@@ -488,8 +493,6 @@
         }
 
         function setVisibility(type) {
-
-            console.log(type)
 
             const priceWrapper = document.getElementById("priceGraphWrapper")
             const fullPriceWrapper = document.getElementById("fullPriceGraphWrapper")
@@ -563,6 +566,22 @@
             }
 
             document.getElementById("buttonWrapper").classList.remove("hidden")
+        }
+
+        function getDayPrice() {
+            const price = 6.26372
+            // 3.20 + 2.79372 + 0.27
+            return price
+        }
+
+        function getNightPrice() {
+            const price = 4.46372
+             // 1.40 + 2.79372 + 0.27
+            return price
+        }
+
+        function getNightHours() {
+            return [0, 1, 2, 3, 4, 5, 6, 22, 23, 24, 25, 26, 27, 28, 29, 30, 46, 47, 48]
         }
 
     </script>
