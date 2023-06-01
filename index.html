@@ -225,6 +225,25 @@
             background-color: rgba(0, 0, 0, 0.1);
         }
 
+        .bottomRulerWrapper,
+        .topRulerWrapper {
+            width: 0 !important;
+            background-color: transparent !important;
+            min-width: 0 !important;
+        }
+
+        .bottomRuler,
+        .topRuler {
+            z-index: -1;
+            background-color: transparent !important;
+            position: absolute;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            max-width: 460px;
+            color: rgba(255, 255, 255, 0.2);
+            text-align: left;
+        }
+
     </style>
     <title>SPOT testi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -243,8 +262,8 @@
         </div>
         <div class="graphWrapper">
             <span id="selectedPrice" class="selectedPrice"></span>
-            <div id="priceGraphWrapper" class="priceGraphWrapper"> </div>
-            <div id="fullPriceGraphWrapper" class="fullPriceGraphWrapper hidden"> </div>
+            <div id="priceGraphWrapper" class="priceGraphWrapper"></div>
+            <div id="fullPriceGraphWrapper" class="fullPriceGraphWrapper hidden"></div>
             <div id="priceTableWrapper" class="priceTableWrapper hidden">
                 <table id="priceTable">
                     <tbody>
@@ -283,6 +302,7 @@
         }
         async function fetchGraphPrices() {
             const start = new Date(Date.now());
+            console.log(start)
             start.setHours(00)
             const end = new Date(Date.now() + 24 * 60 * 60 * 1000);
             end.setHours(23)
@@ -301,9 +321,56 @@
                 for (let i = 0; i < data.prices.length; i++) {
                     pricesArray.push(data.prices[i].value)
                 }
-                const maxPrice = Math.max(...pricesArray)
+                let showTopRuler = true
+                let maxPrice = Math.max(...pricesArray)
+
+                if (maxPrice < 41) {
+                    maxPrice = 41;
+                    showTopRuler = false;
+                }
+
+                if (maxPrice > 41 && maxPrice < 81)
+                    maxPrice = 81
+                
+                // SET BOTTOM RULER =>
+                const bottomRulerWrapper = document.createElement("div");
+                bottomRulerWrapper.setAttribute("id", "bottomRulerWrapper");
+                bottomRulerWrapper.classList.add("bottomRulerWrapper")
+
+                document.getElementById("priceGraphWrapper").appendChild(bottomRulerWrapper);
+
+                const bottomRuler = document.createElement("div");
+                bottomRuler.setAttribute("id", "bottomRuler");
+                bottomRuler.classList.add("bottomRuler")
+                bottomRuler.innerHTML = "5 snt"
+                document.getElementById("bottomRulerWrapper").appendChild(bottomRuler);
 
 
+                setTimeout(function() {
+                    bottomRulerWrapper.style.height = 40.32258065 / maxPrice * 100 + "%";
+                }, 10);
+
+                // SET TOP RULER =>
+                if (showTopRuler) {
+                    const topRulerWrapper = document.createElement("div");
+                    topRulerWrapper.setAttribute("id", "topRulerWrapper");
+                    topRulerWrapper.classList.add("topRulerWrapper")
+
+                    document.getElementById("priceGraphWrapper").appendChild(topRulerWrapper);
+
+                    const topRuler = document.createElement("div");
+                    topRuler.setAttribute("id", "topRuler");
+                    topRuler.classList.add("topRuler")
+                    topRuler.innerHTML = "10 snt"
+                    document.getElementById("topRulerWrapper").appendChild(topRuler);
+
+
+                    setTimeout(function() {
+                        topRulerWrapper.style.height = 80.64516129 / maxPrice * 100 + "%";
+                    }, 10);
+                }
+
+                // SET BAR VALUES
                 for (let i = 0; i < data.prices.length; i++) {
                     if (i == "24" || i == "48") {
                         const divider = document.createElement("span");
@@ -327,6 +394,7 @@
                         element.style.height = data.prices[i].value / maxPrice * 100 + "%";
                     }, 10);
                 }
+
             }
             document.getElementById(currentHours).classList.add("current")
         }
@@ -493,7 +561,6 @@
         }
 
         function setVisibility(type) {
-
             const priceWrapper = document.getElementById("priceGraphWrapper")
             const fullPriceWrapper = document.getElementById("fullPriceGraphWrapper")
             const tableWrapper = document.getElementById("priceTableWrapper")
@@ -576,7 +643,7 @@
 
         function getNightPrice() {
             const price = 4.46372
-             // 1.40 + 2.79372 + 0.27
+            // 1.40 + 2.79372 + 0.27
             return price
         }
 
