@@ -204,6 +204,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
+        let priceChart
+        let fullPriceChart
+
+    </script>
+
+    <script>
         async function fetchGraphPrices() {
             const start = new Date(Date.now());
             start.setHours(00)
@@ -231,7 +237,7 @@
 
                 const ctx = document.getElementById('myChart');
 
-                new Chart(ctx, {
+                priceChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: hoursArray,
@@ -268,6 +274,14 @@
                     }
                 });
             }
+            const now = new Date(Date.now());
+            const current = now.getHours()
+            console.log(current)
+
+            priceChart.setActiveElements([{
+                datasetIndex: 0,
+                index: current
+            }, ]);
         }
 
         async function fetchData() {
@@ -328,8 +342,11 @@
 
                 const ctx = document.getElementById('myChart2');
 
-                new Chart(ctx, {
+                fullPriceChart = new Chart(ctx, {
                     type: 'bar',
+                    defaults: {
+                        color: "#FFFFFF"
+                    },
                     data: {
                         labels: hoursArray,
                         datasets: [{
@@ -372,6 +389,18 @@
                         }
                     }
                 });
+
+                const now = new Date(Date.now());
+                const current = now.getHours()
+                console.log(current)
+
+                fullPriceChart.setActiveElements([{
+                    datasetIndex: 1,
+                    index: current
+                }, {
+                    datasetIndex: 0,
+                    index: current
+                }]);
             }
         }
 
@@ -434,47 +463,13 @@
             document.getElementById("tr" + currentHours).classList.add("current")
         }
 
-        function toggleVisibilty() {
-            const hours = document.getElementById("priceGraphWrapper")
-            const day = document.getElementById("fullPriceGraphWrapper")
-            const table = document.getElementById("priceTableWrapper")
-
-            for (const child of hours.children) {
-                child.style.height = "0";
-            }
-            for (const child of day.children) {
-                child.style.height = "0";
-            }
-
-            setTimeout(function() {
-                hours.classList.toggle("hidden")
-                day.classList.toggle("hidden")
-                hours.innerHTML = '';
-                day.innerHTML = '';
-
-                if (hours.classList.contains("hidden")) fetchGraphFullPrices()
-                if (day.classList.contains("hidden")) fetchGraphPrices()
-            }, 400);
-        }
-
         function setVisibility(type) {
             const priceWrapper = document.getElementById("priceGraphWrapper")
             const fullPriceWrapper = document.getElementById("fullPriceGraphWrapper")
             const tableWrapper = document.getElementById("priceTableWrapper")
 
-            //            for (const child of priceWrapper.children) {
-            //                child.style.height = "0";
-            //            }
-            //            for (const child of fullPriceWrapper.children) {
-            //                child.style.height = "0";
-            //            }
-            //            tableWrapper.style.opacity = 0
-
-            //            setTimeout(function() {
-            //                priceWrapper.innerHTML = '';
-            //                fullPriceWrapper.innerHTML = '';
-            //                document.querySelector("#priceTable tbody").innerHTML = '';
-
+            if (priceChart) priceChart.destroy()
+            if (fullPriceChart) fullPriceChart.destroy()
 
             if (type == 'price') {
                 document.getElementById("priceButton").classList.add("selected")
@@ -504,15 +499,6 @@
                 tableWrapper.style.opacity = 1
                 fetchPricesTable()
             }
-            //            }, 400);
-        }
-
-        function selectHour(hour, priceText) {
-            document.getElementById("selectedPrice").innerHTML = priceText;
-        }
-
-        function emptySelectedHour() {
-            document.getElementById("selectedPrice").innerHTML = "";
         }
 
         function setBackground(value) {
