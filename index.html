@@ -305,7 +305,6 @@
         }
         async function fetchGraphPrices() {
             const start = new Date(Date.now());
-            console.log(start)
             start.setHours(00)
             const end = new Date(Date.now() + 24 * 60 * 60 * 1000);
             end.setHours(23)
@@ -320,38 +319,61 @@
             if (response.ok) {
                 const data = await response.json();
 
+                let total = 0
+
                 const pricesArray = []
                 for (let i = 0; i < data.prices.length; i++) {
                     pricesArray.push(data.prices[i].value)
+                    total += data.prices[i].value
                 }
-                let showTopRuler = true
                 let maxPrice = Math.max(...pricesArray)
+                let minPrice = Math.min(...pricesArray)
+                let avgPrice = Math.floor(total / data.prices.length)
 
-                if (maxPrice < 41) {
+
+                let showTopRuler = true
+                let showBottomRuler = true
+                let topRulerHeight = 80.64516129
+                let topRulerText = 10
+
+                if ((maxPrice * 1.24 / 10).toFixed() < 5) {
                     maxPrice = 41;
+                    showBottomRuler = true;
                     showTopRuler = false;
                 }
 
-                if (maxPrice > 41 && maxPrice < 81)
+                if ((maxPrice * 1.24 / 10).toFixed() > 5 && (maxPrice * 1.24 / 10).toFixed() < 10) {
                     maxPrice = 81
-                
+                    showBottomRuler = true;
+                    showTopRuler = true;
+                }
+
+                if ((minPrice * 1.24 / 10).toFixed() > 10) {
+                    showBottomRuler = false;
+                    showTopRuler = true;
+                    topRulerHeight = avgPrice
+                    topRulerText = (avgPrice * 1.24 / 10).toFixed(0)
+                }
+
                 // SET BOTTOM RULER =>
-                const bottomRulerWrapper = document.createElement("div");
-                bottomRulerWrapper.setAttribute("id", "bottomRulerWrapper");
-                bottomRulerWrapper.classList.add("bottomRulerWrapper")
+                if (showBottomRuler) {
+                    const bottomRulerWrapper = document.createElement("div");
+                    bottomRulerWrapper.setAttribute("id", "bottomRulerWrapper");
+                    bottomRulerWrapper.classList.add("bottomRulerWrapper")
 
-                document.getElementById("priceGraphWrapper").appendChild(bottomRulerWrapper);
+                    document.getElementById("priceGraphWrapper").appendChild(bottomRulerWrapper);
 
-                const bottomRuler = document.createElement("div");
-                bottomRuler.setAttribute("id", "bottomRuler");
-                bottomRuler.classList.add("bottomRuler")
-                bottomRuler.innerHTML = "5 snt"
-                document.getElementById("bottomRulerWrapper").appendChild(bottomRuler);
+                    const bottomRuler = document.createElement("div");
+                    bottomRuler.setAttribute("id", "bottomRuler");
+                    bottomRuler.classList.add("bottomRuler")
+                    bottomRuler.innerHTML = "5 snt"
+                    document.getElementById("bottomRulerWrapper").appendChild(bottomRuler);
 
 
-                setTimeout(function() {
-                    bottomRulerWrapper.style.height = 40.32258065 / maxPrice * 100 + "%";
-                }, 10);
+                    setTimeout(function() {
+                        bottomRulerWrapper.style.height = 40.32258065 / maxPrice * 100 + "%";
+                    }, 10);
+                }
 
                 // SET TOP RULER =>
                 if (showTopRuler) {
@@ -364,12 +386,12 @@
                     const topRuler = document.createElement("div");
                     topRuler.setAttribute("id", "topRuler");
                     topRuler.classList.add("topRuler")
-                    topRuler.innerHTML = "10 snt"
+                    topRuler.innerHTML = topRulerText + " snt"
                     document.getElementById("topRulerWrapper").appendChild(topRuler);
 
 
                     setTimeout(function() {
-                        topRulerWrapper.style.height = 80.64516129 / maxPrice * 100 + "%";
+                        topRulerWrapper.style.height = topRulerHeight / maxPrice * 100 + "%";
                     }, 10);
                 }
 
