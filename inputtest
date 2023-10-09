@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style type="text/css">
+        body {
+            font: sans-serif;
+            font-size: 25px;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        div {
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            visibility: hidden;
+        }
+
+    </style>
+    <title>qwertyu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body id="body">
+
+
+    <div id="wrapper">
+
+    </div>
+    <button onClick="changeView()">Refresh</button>
+
+
+</body>
+
+</html>
+
+<script>
+    function changeView() {
+        const wrapper = document.getElementById("wrapper")
+
+        const content = "<div><h1>Otsikko on tämä</h1> <p role='status'> Tämä teksti pitäisi tulla luetuksi kivasti.</p><div><Label htmlFor='emailAddress'>Sähköpostiosoite</Label><input id='emailAddress' type='email' autoComplete='email' aria-required=true placeholder='Syötä sähköpostiosotteesi' autofocus /></div>"
+        
+        wrapper.innerHTML = content
+    }
+
+</script>
