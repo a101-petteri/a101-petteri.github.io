@@ -335,7 +335,10 @@
 
                     var addedValue = dayPrice.toFixed(2)
                     if (nightPriceTimes.includes(hour)) addedValue = nightPrice.toFixed(2)
-                    if (value < 0) addedValue = addedValue - value
+                    if (value < 0) {
+                        const positiveValue = value * -1
+                        addedValue -= positiveValue
+                    }
                     fullPricesArray.push(addedValue)
                 }
 
