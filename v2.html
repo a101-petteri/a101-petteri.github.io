@@ -219,7 +219,7 @@
                 hour: "numeric"
             })
 
-            var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2023-12-31T22:00:00.000Z";
+            var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2024-12-31T22:00:00.000Z";
             const response = await fetch(targetUrl);
             if (response.ok) {
                 const data = await response.json();
@@ -317,7 +317,7 @@
                 hour: "numeric"
             })
 
-            var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2023-12-31T22:00:00.000Z";
+            var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2024-12-31T22:00:00.000Z";
             const response = await fetch(targetUrl);
             if (response.ok) {
                 const data = await response.json();
@@ -422,7 +422,7 @@
             const nightPrice = getNightPrice()
             const nightPriceTimes = getNightHours()
 
-            var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2023-12-31T22:00:00.000Z";
+            var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2024-12-31T22:00:00.000Z";
             const response = await fetch(targetUrl);
             if (response.ok) {
                 const data = await response.json();
