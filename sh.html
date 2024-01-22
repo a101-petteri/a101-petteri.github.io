@@ -202,6 +202,9 @@
         }
 
         async function fetchGraphData() {
+
+            document.getElementById("graphWrapper").innerHTML = "&nbsp;";
+
             const start = new Date(Date.now());
             start.setHours(00)
             const end = new Date(Date.now());
@@ -227,7 +230,7 @@
 
                     document.getElementById("graphWrapper").appendChild(element);
                     setTimeout(function() {
-                        element.style.height = data.prices[i].value / 3 + "%";
+                        element.style.height = data.prices[i].value + "%";
                     }, 10);
                 }
             }
