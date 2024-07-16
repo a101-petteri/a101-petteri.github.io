@@ -18,21 +18,9 @@
             font-family: 'Poppins', sans-serif;
             font-size: 16px;
             box-sizing: border-box;
-            transition: background-color 1s ease-out;
+            transition: all 1s ease-out;
             min-width: 320px;
             height: 100vh;
-        }
-
-        .good {
-            background-color: #3d9317;
-        }
-
-        .neutral {
-            background-color: #505bff;
-        }
-
-        .bad {
-            background-color: #e73c7e;
         }
 
         .wrapper {
@@ -247,6 +235,25 @@
             text-align: left;
         }
 
+        .loader {
+            margin-top: 200px;
+            text-align: center;
+            opacity: .4;
+            font-size: 100px;
+            filter: grayscale(100%);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            50% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: .4
+            }
+        }
+
     </style>
     <title>SPOT prices</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -254,6 +261,9 @@
 
 <body onload="fetchData(), fetchGraphPrices()" id="body">
     <div class="wrapper">
+        <div class="loader" id="loader">
+            ⚡
+        </div>
 
         <div class="priceWrapper">
             <div>
@@ -266,6 +276,7 @@
         <div class="graphWrapper">
             <span id="selectedPrice" class="selectedPrice"></span>
             <div id="priceGraphWrapper" class="priceGraphWrapper"></div>
+
             <div id="fullPriceGraphWrapper" class="fullPriceGraphWrapper hidden"></div>
             <div id="priceTableWrapper" class="priceTableWrapper hidden">
                 <table id="priceTable">
@@ -297,7 +308,8 @@
                 document.getElementById('time').innerHTML = now.toLocaleTimeString('fi-FI', {
                     hour: "2-digit"
                 }) + ":00";
-                setBackground(Math.round(price * 1.24) / 10)
+                //                hideLoader();
+                setBackground(Math.round(price * 1.24) / 10);
 
                 document.getElementById('dayPriceLegend').innerHTML = getDayPrice()
                 document.getElementById('nightPriceLegend').innerHTML = getNightPrice()
@@ -329,7 +341,6 @@
                 let maxPrice = Math.max(...pricesArray)
                 let minPrice = Math.min(...pricesArray)
                 let avgPrice = Math.floor(total / data.prices.length)
-
 
                 let showTopRuler = true
                 let showBottomRuler = true
@@ -416,8 +427,10 @@
                     document.getElementById("priceGraphWrapper").appendChild(element);
                     setTimeout(function() {
                         element.style.height = data.prices[i].value / maxPrice * 100 + "%";
-                    }, 10);
+                    }, 100);
                 }
+
+
 
             }
             document.getElementById(currentHours).classList.add("current")
@@ -646,12 +659,28 @@
         }
 
         function setBackground(value) {
+            const loader = document.getElementById("loader")
+            loader.classList.add("hidden")
+
             const body = document.getElementById("body")
             if (value > 10) value = 10
             else if (value < 0) value = 0
-            const colorValue = 100-value*10
-            body.style.background = "linear-gradient(140deg, hsla(" + colorValue + ", 100%, 40%, 1) 0%, hsla(" + colorValue + ", 100%, 25%, 1)";
-            
+            const colorValue = 100 - value * 10
+
+            body.style.backgroundColor = "hsla(" + colorValue + ", 100%, 30%, 1)";
+
+            //            setTimeout(function() {
+            //                body.style.backgroundImage = "linear-gradient(140deg, hsla(" + colorValue + ", 100%, 40%, 1) 0%, hsla(" + colorValue + ", 100%, 25%, 1)";
+            //
+            //                window.CSS.registerProperty({
+            //                    name: "--item-color",
+            //                    syntax: "<color>",
+            //                    inherits: false,
+            //                    initialValue: "aqua",
+            //                });
+            //
+            //            }, 1000);
+
             document.getElementById("buttonWrapper").classList.remove("hidden")
         }
 
