@@ -1,708 +1,724 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fi">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap" rel="stylesheet" />
+        <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png" />
+        <style type="text/css">
+            body {
+                background-color: #fafafa;
+                background-size: 100% 100%;
+                margin: 0;
+                color: white;
+                font-family: "Poppins", sans-serif;
+                font-size: 16px;
+                box-sizing: border-box;
+                transition: all 1s ease-out;
+                min-width: 320px;
+                height: 100vh;
+            }
 
-<head>
-    <meta charset="UTF-8">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap" rel="stylesheet">
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-    <style type="text/css">
-        body {
-            background-color: white;
-            background-size: 100% 100%;
-            margin: 0;
-            color: white;
-            font-family: 'Poppins', sans-serif;
-            font-size: 16px;
-            box-sizing: border-box;
-            transition: all 1s ease-out;
-            min-width: 320px;
-            height: 100vh;
-        }
+            @media (prefers-color-scheme: dark) {
+                body {
+                    background-color: #363636;
+                }
+            }
 
-        .wrapper {
-            max-width: 500px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            height: calc(100% - 110px);
-            margin: 0 auto;
-        }
+            .wrapper {
+                max-width: 500px;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                height: calc(100% - 110px);
+                margin: 0 auto;
+            }
 
-        .priceWrapper {
-            margin: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .price {
-            text-align: center;
-            font-size: 125px;
-            line-height: 125px;
-            font-weight: 700;
-
-        }
-
-        .time {
-            font-size: 25px;
-            font-weight: 700;
-        }
-
-        .priceText {
-            text-align: right;
-        }
-
-        .graphWrapper {
-            height: 100%;
-            margin: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 1;
-            overflow: scroll;
-        }
-
-        .priceGraphWrapper,
-        .fullPriceGraphWrapper {
-            height: 100%;
-            margin: 20px;
-            display: flex;
-            flex-direction: row;
-            align-items: end;
-            gap: 5px;
-            flex: 1;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            width: 100%;
-            min-width: 320px;
-        }
-
-        .fullPriceGraphWrapper,
-        .priceGraphWrapper {
-            overflow-x: auto;
-        }
-
-        .priceGraphWrapper>div {
-            width: 100%;
-            border-radius: 4px 4px 0 0;
-            text-align: center;
-            height: 0;
-            background-color: rgba(255, 255, 255, 0.5);
-            transition: height 400ms ease-in-out;
-            min-width: calc(100%/24 - 6px);
-            box-sizing: border-box;
-        }
-
-        .fullPriceGraphWrapper>div {
-            width: 100%;
-            border-radius: 4px 4px 0 0;
-            height: 0;
-            transition: height 400ms ease-in-out;
-            min-width: calc(100%/24 - 6px);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .fullPriceGraphWrapper>div>.bottom {
-            background-color: rgba(255, 255, 255, 0.5);
-            height: auto;
-            display: flex;
-            flex: 1;
-        }
-
-        .fullPriceGraphWrapper>div>.top {
-            height: 40px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-            border-radius: 4px 4px 0 0;
-            display: flex;
-        }
-
-        .priceGraphWrapper>div:hover,
-        .fullPriceGraphWrapper>div:hover {
-            background-color: rgba(255, 255, 255, 0.8) !important;
-            cursor: pointer;
-        }
-
-        .current {
-            background-color: white !important;
-            color: rgba(0, 0, 0, 0.3);
-        }
-
-        .divider {
-            width: 1px !important;
-            min-width: 1px !important;
-            background: none !important;
-            border-left: 1px dashed rgba(255, 255, 255, 0.2);
-            border-radius: 0 !important;
-        }
-
-        .selectedPrice {
-            color: rgba(255, 255, 255, 0.5);
-            height: 24px;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .buttonWrapper {
-            margin: 0 20px 20px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            align-items: start;
-
-        }
-
-        .button {
-            border: solid 1px white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: 250ms ease-out;
-            flex: 1;
-            text-align: center;
-        }
-
-        .button:hover {
-            background: rgba(255, 255, 255, 0.5);
-        }
-
-        .button.selected {
-            background: rgba(255, 255, 255, 1);
-            color: rgba(0, 0, 0, 0.5);
-        }
-
-        .priceTableWrapper {
-            min-height: 80%;
-            margin: 20px;
-            width: 100%;
-            min-width: 320px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            opacity: 1;
-            transition: opacity 400ms ease-in-out;
-        }
-
-        .priceTableWrapper>table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        .priceTableWrapper>table>tbody>tr>td {
-            padding: 2px 4px;
-            border-bottom: solid 1px rgba(255, 255, 255, 0.4);
-            width: 33%;
-            text-align: center;
-        }
-
-        td.icon {
-            width: auto !important;
-        }
-
-        .priceTableWrapper>table>tbody>tr.current>td {
-            background-color: white !important;
-            color: rgba(0, 0, 0, 0.5);
-        }
-
-        .priceTableWrapper>table>tbody>tr.nightRow>td {
-            background-color: rgba(0, 0, 0, 0.1);
-        }
-
-        .bottomRulerWrapper,
-        .topRulerWrapper {
-            width: 0 !important;
-            background-color: transparent !important;
-            min-width: 0 !important;
-        }
-
-        .bottomRuler,
-        .topRuler {
-            z-index: -1;
-            background-color: transparent !important;
-            position: absolute;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            width: 100%;
-            max-width: 460px;
-            color: rgba(255, 255, 255, 0.2);
-            text-align: left;
-        }
-
-        .loader {
-            margin-top: 200px;
-            text-align: center;
-            opacity: .4;
-            font-size: 100px;
-            filter: grayscale(100%);
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            50% {
+            .priceWrapper {
+                margin: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 opacity: 0;
+                animation: fadeIn ease-out forwards 1s;
             }
 
-            100% {
-                opacity: .4
+            .price {
+                text-align: center;
+                font-size: 125px;
+                line-height: 125px;
+                font-weight: 700;
             }
-        }
 
-    </style>
-    <title>SPOT prices</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
+            .time {
+                font-size: 25px;
+                font-weight: 700;
+            }
 
-<body onload="fetchData(), fetchGraphPrices()" id="body">
-    <div class="wrapper">
-        <div class="loader" id="loader">
-            ⚡
-        </div>
+            .priceText {
+                text-align: right;
+            }
 
-        <div class="priceWrapper">
-            <div>
-                <div id="date" class="date"></div>
-                <div id="time" class="time"></div>
-                <div id="price" class="price"></div>
-                <div class="priceText">snt/kWh</div>
+            .graphWrapper {
+                height: 100%;
+                margin: 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                flex: 1;
+                overflow: scroll;
+                opacity: 0;
+                animation: fadeIn ease-out forwards 1s;
+            }
+
+            .priceGraphWrapper,
+            .fullPriceGraphWrapper {
+                height: 100%;
+                margin: 20px;
+                display: flex;
+                flex-direction: row;
+                align-items: end;
+                gap: 5px;
+                flex: 1;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                width: 100%;
+                min-width: 320px;
+            }
+
+            .fullPriceGraphWrapper,
+            .priceGraphWrapper {
+                overflow-x: auto;
+            }
+
+            .priceGraphWrapper > div {
+                width: 100%;
+                border-radius: 4px 4px 0 0;
+                text-align: center;
+                height: 0;
+                background-color: rgba(255, 255, 255, 0.5);
+                transition: height 400ms ease-in-out;
+                min-width: calc(100% / 24 - 6px);
+                box-sizing: border-box;
+            }
+
+            .fullPriceGraphWrapper > div {
+                width: 100%;
+                border-radius: 4px 4px 0 0;
+                height: 0;
+                transition: height 400ms ease-in-out;
+                min-width: calc(100% / 24 - 6px);
+                display: flex;
+                flex-direction: column;
+            }
+
+            .fullPriceGraphWrapper > div > .bottom {
+                background-color: rgba(255, 255, 255, 0.5);
+                height: auto;
+                display: flex;
+                flex: 1;
+            }
+
+            .fullPriceGraphWrapper > div > .top {
+                height: 40px;
+                background-color: rgba(255, 255, 255, 0.2);
+                border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+                border-radius: 4px 4px 0 0;
+                display: flex;
+            }
+
+            .priceGraphWrapper > div:hover,
+            .fullPriceGraphWrapper > div:hover {
+                background-color: rgba(255, 255, 255, 0.8) !important;
+                cursor: pointer;
+            }
+
+            .current {
+                background-color: white !important;
+                color: rgba(0, 0, 0, 0.3);
+            }
+
+            .divider {
+                width: 1px !important;
+                min-width: 1px !important;
+                background: none !important;
+                border-left: 1px dashed rgba(255, 255, 255, 0.2);
+                border-radius: 0 !important;
+            }
+
+            .selectedPrice {
+                color: rgba(255, 255, 255, 0.5);
+                height: 24px;
+            }
+
+            .hidden {
+                display: none !important;
+            }
+
+            .buttonWrapper {
+                margin: 0 20px 20px 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                align-items: start;
+                opacity: 0;
+                animation: fadeIn ease-in forwards 500ms;
+            }
+
+            .button {
+                border: solid 1px white;
+                padding: 4px 8px;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: 250ms ease-out;
+                flex: 1;
+                text-align: center;
+            }
+
+            .button:hover {
+                background: rgba(255, 255, 255, 0.5);
+            }
+
+            .button.selected {
+                background: rgba(255, 255, 255, 1);
+                color: rgba(0, 0, 0, 0.5);
+            }
+
+            .priceTableWrapper {
+                min-height: 80%;
+                margin: 20px;
+                width: 100%;
+                min-width: 320px;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                opacity: 1;
+                transition: opacity 400ms ease-in-out;
+            }
+
+            .priceTableWrapper > table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            .priceTableWrapper > table > tbody > tr > td {
+                padding: 2px 4px;
+                border-bottom: solid 1px rgba(255, 255, 255, 0.4);
+                width: 33%;
+                text-align: center;
+            }
+
+            td.icon {
+                width: auto !important;
+            }
+
+            .priceTableWrapper > table > tbody > tr.current > td {
+                background-color: white !important;
+                color: rgba(0, 0, 0, 0.5);
+            }
+
+            .priceTableWrapper > table > tbody > tr.nightRow > td {
+                background-color: rgba(0, 0, 0, 0.1);
+            }
+
+            .bottomRulerWrapper,
+            .topRulerWrapper {
+                width: 0 !important;
+                background-color: transparent !important;
+                min-width: 0 !important;
+            }
+
+            .bottomRuler,
+            .topRuler {
+                z-index: -1;
+                background-color: transparent !important;
+                position: absolute;
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+                width: 100%;
+                max-width: 460px;
+                color: rgba(255, 255, 255, 0.2);
+                text-align: left;
+            }
+
+            .loader {
+                text-align: center;
+                opacity: 0.4;
+                font-size: 100px;
+                flex: 1;
+                align-content: center;
+                animation: pulse 1.5s ease-in-out infinite;
+            }
+
+            @keyframes pulse {
+                50% {
+                    opacity: 0;
+                }
+
+                100% {
+                    opacity: 0.4;
+                }
+            }
+            @keyframes fadeIn {
+                to {
+                    opacity: 1;
+                }
+            }
+            @keyframes fadeOut {
+                to {
+                    opacity: 0;
+                }
+            }
+        </style>
+        <title>SPOT prices</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    </head>
+
+    <body onload="fetchData(), fetchGraphPrices()" id="body">
+        <div class="wrapper">
+            <div class="loader" id="loader">⚡</div>
+
+            <div id="priceWrapper" class="priceWrapper hidden">
+                <div>
+                    <div id="date" class="date"></div>
+                    <div id="time" class="time"></div>
+                    <div id="price" class="price"></div>
+                    <div id="priceText" class="priceText">snt/kWh</div>
+                </div>
+            </div>
+            <div id="graphWrapper" class="graphWrapper hidden">
+                <span id="selectedPrice" class="selectedPrice"></span>
+                <div id="priceGraphWrapper" class="priceGraphWrapper"></div>
+
+                <div id="fullPriceGraphWrapper" class="fullPriceGraphWrapper hidden"></div>
+                <div id="priceTableWrapper" class="priceTableWrapper hidden">
+                    <table id="priceTable">
+                        <tbody></tbody>
+                    </table>
+                    <div>Day: <span id="dayPriceLegend"></span> // Night: <span id="nightPriceLegend"></span></div>
+                </div>
+            </div>
+            <div id="buttonWrapper" class="buttonWrapper hidden">
+                <div id="priceButton" class="button selected" onclick="setVisibility('price');">Price</div>
+                <div id="fullPriceButton" class="button" onclick="setVisibility('fullPrice');">Full price</div>
+                <div id="tableButton" class="button" onclick="setVisibility('table');">Table</div>
             </div>
         </div>
-        <div class="graphWrapper">
-            <span id="selectedPrice" class="selectedPrice"></span>
-            <div id="priceGraphWrapper" class="priceGraphWrapper"></div>
 
-            <div id="fullPriceGraphWrapper" class="fullPriceGraphWrapper hidden"></div>
-            <div id="priceTableWrapper" class="priceTableWrapper hidden">
-                <table id="priceTable">
-                    <tbody>
-                    </tbody>
-                </table>
-                <div>Day: <span id="dayPriceLegend"></span> // Night: <span id="nightPriceLegend"></span></div>
-            </div>
-        </div>
-        <div id="buttonWrapper" class="buttonWrapper hidden">
-            <div id="priceButton" class="button selected" onclick="setVisibility('price');">Price</div>
-            <div id="fullPriceButton" class="button" onclick="setVisibility('fullPrice');">Full price</div>
-            <div id="tableButton" class="button" onclick="setVisibility('table');">Table</div>
-        </div>
+        <script>
+            async function fetchData() {
+                const now = new Date(Date.now());
 
-    </div>
+                var targetUrl = "https://sahkotin.fi/prices?start=" + now.toISOString() + "&end=" + now.toISOString();
+                const response = await fetch(targetUrl);
+                if (response.ok) {
+                    const data = await response.json();
+                    const price = data.prices[0].value;
+                    document.getElementById("price").innerHTML = ((price * 1.24) / 10).toFixed(1);
+                    document.getElementById("date").innerHTML = now.toLocaleDateString();
+                    document.getElementById("time").innerHTML =
+                        now.toLocaleTimeString("fi-FI", {
+                            hour: "2-digit"
+                        }) + ":00";
+                    setBackground(Math.round(price * 1.24) / 10);
 
-    <script>
-        async function fetchData() {
-            const now = new Date(Date.now());
-
-            var targetUrl = "https://sahkotin.fi/prices?start=" + now.toISOString() + "&end=" + now.toISOString();
-            const response = await fetch(targetUrl);
-            if (response.ok) {
-                const data = await response.json();
-                const price = data.prices[0].value;
-                document.getElementById('price').innerHTML = (price * 1.24 / 10).toFixed(1);
-                document.getElementById('date').innerHTML = now.toLocaleDateString();
-                document.getElementById('time').innerHTML = now.toLocaleTimeString('fi-FI', {
-                    hour: "2-digit"
-                }) + ":00";
-                //                hideLoader();
-                setBackground(Math.round(price * 1.24) / 10);
-
-                document.getElementById('dayPriceLegend').innerHTML = getDayPrice()
-                document.getElementById('nightPriceLegend').innerHTML = getNightPrice()
+                    document.getElementById("dayPriceLegend").innerHTML = getDayPrice();
+                    document.getElementById("nightPriceLegend").innerHTML = getNightPrice();
+                }
             }
-        }
-        async function fetchGraphPrices() {
-            const start = new Date(Date.now());
-            start.setHours(00)
-            const end = new Date(Date.now() + 24 * 60 * 60 * 1000);
-            end.setHours(23)
+            async function fetchGraphPrices() {
+                const start = new Date(Date.now());
+                start.setHours(00);
+                const end = new Date(Date.now() + 24 * 60 * 60 * 1000);
+                end.setHours(23);
 
-            const today = new Date(Date.now())
-            const currentHours = today.toLocaleTimeString('fi-FI', {
-                hour: "numeric"
-            })
+                const today = new Date(Date.now());
+                const currentHours = today.toLocaleTimeString("fi-FI", {
+                    hour: "numeric"
+                });
 
-            var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2024-12-31T22:00:00.000Z";
-            const response = await fetch(targetUrl);
-            if (response.ok) {
-                const data = await response.json();
+                var targetUrl =
+                    "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2024-12-31T22:00:00.000Z";
+                const response = await fetch(targetUrl);
+                if (response.ok) {
+                    const data = await response.json();
 
-                let total = 0
+                    let total = 0;
 
-                const pricesArray = []
-                for (let i = 0; i < data.prices.length; i++) {
-                    pricesArray.push(data.prices[i].value)
-                    total += data.prices[i].value
-                }
-                let maxPrice = Math.max(...pricesArray)
-                let minPrice = Math.min(...pricesArray)
-                let avgPrice = Math.floor(total / data.prices.length)
-
-                let showTopRuler = true
-                let showBottomRuler = true
-                let topRulerHeight = 80.64516129
-                let topRulerText = 10
-
-                if ((maxPrice * 1.24 / 10).toFixed() < 5) {
-                    maxPrice = 41;
-                    showBottomRuler = true;
-                    showTopRuler = false;
-                }
-
-                if ((maxPrice * 1.24 / 10).toFixed() > 5 && (maxPrice * 1.24 / 10).toFixed() < 20) {
-                    showBottomRuler = true;
-                    showTopRuler = true;
-                }
-
-                if ((maxPrice * 1.24 / 10).toFixed() > 20) {
-                    showBottomRuler = false;
-                    showTopRuler = true;
-                    topRulerHeight = avgPrice
-                    topRulerText = (avgPrice * 1.24 / 10).toFixed(0)
-                }
-
-                // SET BOTTOM RULER =>
-                if (showBottomRuler) {
-                    const bottomRulerWrapper = document.createElement("div");
-                    bottomRulerWrapper.setAttribute("id", "bottomRulerWrapper");
-                    bottomRulerWrapper.classList.add("bottomRulerWrapper")
-
-                    document.getElementById("priceGraphWrapper").appendChild(bottomRulerWrapper);
-
-                    const bottomRuler = document.createElement("div");
-                    bottomRuler.setAttribute("id", "bottomRuler");
-                    bottomRuler.classList.add("bottomRuler")
-                    bottomRuler.innerHTML = "5 snt"
-                    document.getElementById("bottomRulerWrapper").appendChild(bottomRuler);
-
-
-                    setTimeout(function() {
-                        bottomRulerWrapper.style.height = 40.32258065 / maxPrice * 100 + "%";
-                    }, 10);
-                }
-
-                // SET TOP RULER =>
-                if (showTopRuler) {
-                    const topRulerWrapper = document.createElement("div");
-                    topRulerWrapper.setAttribute("id", "topRulerWrapper");
-                    topRulerWrapper.classList.add("topRulerWrapper")
-
-                    document.getElementById("priceGraphWrapper").appendChild(topRulerWrapper);
-
-                    const topRuler = document.createElement("div");
-                    topRuler.setAttribute("id", "topRuler");
-                    topRuler.classList.add("topRuler")
-                    topRuler.innerHTML = topRulerText + " snt"
-                    document.getElementById("topRulerWrapper").appendChild(topRuler);
-
-
-                    setTimeout(function() {
-                        topRulerWrapper.style.height = topRulerHeight / maxPrice * 100 + "%";
-                    }, 10);
-                }
-
-                // SET BAR VALUES
-                for (let i = 0; i < data.prices.length; i++) {
-                    if (i == "24" || i == "48") {
-                        const divider = document.createElement("span");
-                        divider.setAttribute("class", "divider");
-                        document.getElementById("priceGraphWrapper").appendChild(divider);
-                        divider.style.height = "100%";
+                    const pricesArray = [];
+                    for (let i = 0; i < data.prices.length; i++) {
+                        pricesArray.push(data.prices[i].value);
+                        total += data.prices[i].value;
                     }
-                    const element = document.createElement("div");
-                    element.setAttribute("id", i);
+                    let maxPrice = Math.max(...pricesArray);
+                    let minPrice = Math.min(...pricesArray);
+                    let avgPrice = Math.floor(total / data.prices.length);
 
-                    element.onmouseover = function() {
-                        if (i < 24) selectHour(i, i + ":00 - " + (data.prices[i].value * 1.24 / 10).toFixed(1) + "snt/kWh");
-                        else if (i >= 48) selectHour(i, i - 48 + ":00 - " + (data.prices[i].value * 1.24 / 10).toFixed(1) + "snt/kWh");
-                        else selectHour(i, i - 24 + ":00 - " + (data.prices[i].value * 1.24 / 10).toFixed(1) + "snt/kWh");
-                    };
-                    element.onmouseout = function() {
-                        emptySelectedHour()
-                    };
-                    document.getElementById("priceGraphWrapper").appendChild(element);
-                    setTimeout(function() {
-                        element.style.height = data.prices[i].value / maxPrice * 100 + "%";
-                    }, 100);
-                }
+                    let showTopRuler = true;
+                    let showBottomRuler = true;
+                    let topRulerHeight = 80.64516129;
+                    let topRulerText = 10;
 
-
-
-            }
-            document.getElementById(currentHours).classList.add("current")
-        }
-
-        async function fetchGraphFullPrices() {
-            const start = new Date(Date.now());
-            start.setHours(00)
-            const end = new Date(Date.now() + 24 * 60 * 60 * 1000);
-            end.setHours(23)
-
-            const today = new Date(Date.now())
-            const currentHours = today.toLocaleTimeString('fi-FI', {
-                hour: "numeric"
-            })
-
-            const dayPrice = getDayPrice()
-            const nightPrice = getNightPrice()
-            const nightPriceTimes = getNightHours()
-
-            var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2024-12-31T22:00:00.000Z";
-            const response = await fetch(targetUrl);
-            if (response.ok) {
-                const data = await response.json();
-
-                const pricesArray = []
-                for (let i = 0; i < data.prices.length; i++) {
-                    pricesArray.push(Math.round(data.prices[i].value * 1.24) / 10)
-                }
-                const maxPrice = Math.max(...pricesArray) + dayPrice
-
-                for (let i = 0; i < data.prices.length; i++) {
-                    if (i == "24" || i == "48") {
-                        const divider = document.createElement("span");
-                        divider.setAttribute("class", "divider");
-                        document.getElementById("fullPriceGraphWrapper").appendChild(divider);
-                        divider.style.height = "100%";
-                    }
-                    const element = document.createElement("div");
-                    element.setAttribute("id", i);
-                    const top = document.createElement("div");
-                    top.classList.add("top");
-                    const bottom = document.createElement("div")
-                    bottom.classList.add("bottom");
-
-                    let value = (data.prices[i].value * 1.24 / 10 + dayPrice).toFixed(1)
-                    if (nightPriceTimes.includes(i)) {
-                        value = (data.prices[i].value * 1.24 / 10 + nightPrice).toFixed(1)
+                    if (((maxPrice * 1.24) / 10).toFixed() < 5) {
+                        maxPrice = 41;
+                        showBottomRuler = true;
+                        showTopRuler = false;
                     }
 
-
-                    element.onmouseover = function() {
-                        if (i < 24) selectHour(i, i + ":00 - " + value + "snt/kWh");
-                        else if (i >= 48) selectHour(i, i - 48 + ":00 - " + value + "snt/kWh");
-                        else selectHour(i, i - 24 + ":00 - " + value + "snt/kWh");
-                    };
-                    element.onmouseout = function() {
-                        emptySelectedHour()
-                    };
-
-                    document.getElementById("fullPriceGraphWrapper").appendChild(element);
-                    document.getElementById(i).appendChild(top);
-                    document.getElementById(i).appendChild(bottom);
-
-
-                    let wrapperHeight = (Math.round(data.prices[i].value * 1.24) / 10 + dayPrice) / maxPrice * 100
-                    const maxHeight = document.getElementById("fullPriceGraphWrapper").clientHeight
-                    let topHeight = maxHeight / maxPrice * dayPrice
-
-                    if (nightPriceTimes.includes(i)) {
-                        wrapperHeight = (Math.round(data.prices[i].value * 1.24) / 10 + nightPrice) / maxPrice * 100
-                        topHeight = maxHeight / maxPrice * nightPrice
+                    if (((maxPrice * 1.24) / 10).toFixed() > 5 && ((maxPrice * 1.24) / 10).toFixed() < 20) {
+                        showBottomRuler = true;
+                        showTopRuler = true;
                     }
 
-
-                    setTimeout(function() {
-                        element.style.height = wrapperHeight + "%";
-                        top.style.height = topHeight + "px";
-                    }, 10);
-                }
-            }
-            document.getElementById(currentHours).classList.add("current")
-        }
-
-        async function fetchPricesTable() {
-            const start = new Date(Date.now());
-            start.setHours(00)
-            const end = new Date(Date.now() + 24 * 60 * 60 * 1000);
-            end.setHours(23)
-
-            const today = new Date(Date.now())
-            const currentHours = today.toLocaleTimeString('fi-FI', {
-                hour: "numeric"
-            })
-
-            const dayPrice = getDayPrice()
-            const nightPrice = getNightPrice()
-            const nightPriceTimes = getNightHours()
-
-            var targetUrl = "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2024-12-31T22:00:00.000Z";
-            const response = await fetch(targetUrl);
-            if (response.ok) {
-                const data = await response.json();
-
-                const pricesArray = []
-                for (let i = 0; i < data.prices.length; i++) {
-                    pricesArray.push(Math.round(data.prices[i].value * 1.24) / 10)
-                }
-                const maxPrice = Math.max(...pricesArray)
-                const minPrice = Math.min(...pricesArray)
-
-                for (let i = 0; i < data.prices.length; i++) {
-                    const element = document.createElement("tr");
-                    element.setAttribute("id", i);
-
-                    let hours = i
-                    if (i > 23) hours = i - 24
-                    else if (i > 47) hours = i - 48
-
-                    const price = data.prices[i].value * 1.24 / 10
-
-                    let value = data.prices[i].value * 1.24 / 10 + dayPrice
-                    let icon = "☀️"
-                    if (nightPriceTimes.includes(i)) {
-                        value = data.prices[i].value * 1.24 / 10 + nightPrice
-                        icon = "🌙"
+                    if (((maxPrice * 1.24) / 10).toFixed() > 20) {
+                        showBottomRuler = false;
+                        showTopRuler = true;
+                        topRulerHeight = avgPrice;
+                        topRulerText = ((avgPrice * 1.24) / 10).toFixed(0);
                     }
 
-                    let row = "<td class=\"icon\">" + icon + "</td><td>" + hours + ":00</td><td>" + price.toFixed(2) + "</td><td>" + value.toFixed(2) + "</td>";
-                    var tbody = document.querySelector("#priceTable tbody");
-                    var tr = document.createElement("tr");
-                    tr.setAttribute("id", "tr" + i);
-                    if (nightPriceTimes.includes(i)) {
-                        tr.classList.add("nightRow")
+                    // SET BOTTOM RULER =>
+                    if (showBottomRuler) {
+                        const bottomRulerWrapper = document.createElement("div");
+                        bottomRulerWrapper.setAttribute("id", "bottomRulerWrapper");
+                        bottomRulerWrapper.classList.add("bottomRulerWrapper");
+
+                        document.getElementById("priceGraphWrapper").appendChild(bottomRulerWrapper);
+
+                        const bottomRuler = document.createElement("div");
+                        bottomRuler.setAttribute("id", "bottomRuler");
+                        bottomRuler.classList.add("bottomRuler");
+                        bottomRuler.innerHTML = "5 snt";
+                        document.getElementById("bottomRulerWrapper").appendChild(bottomRuler);
+
+                        setTimeout(function () {
+                            bottomRulerWrapper.style.height = (40.32258065 / maxPrice) * 100 + "%";
+                        }, 10);
                     }
 
-                    tr.innerHTML = row;
-                    tbody.appendChild(tr)
+                    // SET TOP RULER =>
+                    if (showTopRuler) {
+                        const topRulerWrapper = document.createElement("div");
+                        topRulerWrapper.setAttribute("id", "topRulerWrapper");
+                        topRulerWrapper.classList.add("topRulerWrapper");
+
+                        document.getElementById("priceGraphWrapper").appendChild(topRulerWrapper);
+
+                        const topRuler = document.createElement("div");
+                        topRuler.setAttribute("id", "topRuler");
+                        topRuler.classList.add("topRuler");
+                        topRuler.innerHTML = topRulerText + " snt";
+                        document.getElementById("topRulerWrapper").appendChild(topRuler);
+
+                        setTimeout(function () {
+                            topRulerWrapper.style.height = (topRulerHeight / maxPrice) * 100 + "%";
+                        }, 10);
+                    }
+
+                    // SET BAR VALUES
+                    for (let i = 0; i < data.prices.length; i++) {
+                        if (i == "24" || i == "48") {
+                            const divider = document.createElement("span");
+                            divider.setAttribute("class", "divider");
+                            document.getElementById("priceGraphWrapper").appendChild(divider);
+                            divider.style.height = "100%";
+                        }
+                        const element = document.createElement("div");
+                        element.setAttribute("id", i);
+
+                        element.onmouseover = function () {
+                            if (i < 24)
+                                selectHour(
+                                    i,
+                                    i + ":00 - " + ((data.prices[i].value * 1.24) / 10).toFixed(1) + "snt/kWh"
+                                );
+                            else if (i >= 48)
+                                selectHour(
+                                    i,
+                                    i - 48 + ":00 - " + ((data.prices[i].value * 1.24) / 10).toFixed(1) + "snt/kWh"
+                                );
+                            else
+                                selectHour(
+                                    i,
+                                    i - 24 + ":00 - " + ((data.prices[i].value * 1.24) / 10).toFixed(1) + "snt/kWh"
+                                );
+                        };
+                        element.onmouseout = function () {
+                            emptySelectedHour();
+                        };
+                        document.getElementById("priceGraphWrapper").appendChild(element);
+                        setTimeout(function () {
+                            element.style.height = (data.prices[i].value / maxPrice) * 100 + "%";
+                        }, 100);
+                    }
                 }
-            }
-            document.getElementById("tr" + currentHours).classList.add("current")
-        }
-
-        function toggleVisibilty() {
-            const hours = document.getElementById("priceGraphWrapper")
-            const day = document.getElementById("fullPriceGraphWrapper")
-            const table = document.getElementById("priceTableWrapper")
-
-            for (const child of hours.children) {
-                child.style.height = "0";
-            }
-            for (const child of day.children) {
-                child.style.height = "0";
+                document.getElementById(currentHours).classList.add("current");
             }
 
-            setTimeout(function() {
-                hours.classList.toggle("hidden")
-                day.classList.toggle("hidden")
-                hours.innerHTML = '';
-                day.innerHTML = '';
+            async function fetchGraphFullPrices() {
+                const start = new Date(Date.now());
+                start.setHours(00);
+                const end = new Date(Date.now() + 24 * 60 * 60 * 1000);
+                end.setHours(23);
 
-                if (hours.classList.contains("hidden")) fetchGraphFullPrices()
-                if (day.classList.contains("hidden")) fetchGraphPrices()
-            }, 400);
-        }
+                const today = new Date(Date.now());
+                const currentHours = today.toLocaleTimeString("fi-FI", {
+                    hour: "numeric"
+                });
 
-        function setVisibility(type) {
-            const priceWrapper = document.getElementById("priceGraphWrapper")
-            const fullPriceWrapper = document.getElementById("fullPriceGraphWrapper")
-            const tableWrapper = document.getElementById("priceTableWrapper")
+                const dayPrice = getDayPrice();
+                const nightPrice = getNightPrice();
+                const nightPriceTimes = getNightHours();
 
-            for (const child of priceWrapper.children) {
-                child.style.height = "0";
-            }
-            for (const child of fullPriceWrapper.children) {
-                child.style.height = "0";
-            }
-            tableWrapper.style.opacity = 0
+                var targetUrl =
+                    "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2024-12-31T22:00:00.000Z";
+                const response = await fetch(targetUrl);
+                if (response.ok) {
+                    const data = await response.json();
 
-            setTimeout(function() {
-                priceWrapper.innerHTML = '';
-                fullPriceWrapper.innerHTML = '';
-                document.querySelector("#priceTable tbody").innerHTML = '';
+                    const pricesArray = [];
+                    for (let i = 0; i < data.prices.length; i++) {
+                        pricesArray.push(Math.round(data.prices[i].value * 1.24) / 10);
+                    }
+                    const maxPrice = Math.max(...pricesArray) + dayPrice;
 
+                    for (let i = 0; i < data.prices.length; i++) {
+                        if (i == "24" || i == "48") {
+                            const divider = document.createElement("span");
+                            divider.setAttribute("class", "divider");
+                            document.getElementById("fullPriceGraphWrapper").appendChild(divider);
+                            divider.style.height = "100%";
+                        }
+                        const element = document.createElement("div");
+                        element.setAttribute("id", i);
+                        const top = document.createElement("div");
+                        top.classList.add("top");
+                        const bottom = document.createElement("div");
+                        bottom.classList.add("bottom");
 
-                if (type == 'price') {
-                    document.getElementById("priceButton").classList.add("selected")
-                    document.getElementById("fullPriceButton").classList.remove("selected")
-                    document.getElementById("tableButton").classList.remove("selected")
-                    priceWrapper.classList.remove("hidden")
-                    fullPriceWrapper.classList.add("hidden")
-                    tableWrapper.classList.add("hidden")
-                    document.getElementById("selectedPrice").classList.remove("hidden")
-                    fetchGraphPrices()
+                        let value = ((data.prices[i].value * 1.24) / 10 + dayPrice).toFixed(1);
+                        if (nightPriceTimes.includes(i)) {
+                            value = ((data.prices[i].value * 1.24) / 10 + nightPrice).toFixed(1);
+                        }
+
+                        element.onmouseover = function () {
+                            if (i < 24) selectHour(i, i + ":00 - " + value + "snt/kWh");
+                            else if (i >= 48) selectHour(i, i - 48 + ":00 - " + value + "snt/kWh");
+                            else selectHour(i, i - 24 + ":00 - " + value + "snt/kWh");
+                        };
+                        element.onmouseout = function () {
+                            emptySelectedHour();
+                        };
+
+                        document.getElementById("fullPriceGraphWrapper").appendChild(element);
+                        document.getElementById(i).appendChild(top);
+                        document.getElementById(i).appendChild(bottom);
+
+                        let wrapperHeight =
+                            ((Math.round(data.prices[i].value * 1.24) / 10 + dayPrice) / maxPrice) * 100;
+                        const maxHeight = document.getElementById("fullPriceGraphWrapper").clientHeight;
+                        let topHeight = (maxHeight / maxPrice) * dayPrice;
+
+                        if (nightPriceTimes.includes(i)) {
+                            wrapperHeight =
+                                ((Math.round(data.prices[i].value * 1.24) / 10 + nightPrice) / maxPrice) * 100;
+                            topHeight = (maxHeight / maxPrice) * nightPrice;
+                        }
+
+                        setTimeout(function () {
+                            element.style.height = wrapperHeight + "%";
+                            top.style.height = topHeight + "px";
+                        }, 10);
+                    }
                 }
-                if (type == 'fullPrice') {
-                    document.getElementById("priceButton").classList.remove("selected")
-                    document.getElementById("fullPriceButton").classList.add("selected")
-                    document.getElementById("tableButton").classList.remove("selected")
-                    priceWrapper.classList.add("hidden")
-                    fullPriceWrapper.classList.remove("hidden")
-                    tableWrapper.classList.add("hidden")
-                    document.getElementById("selectedPrice").classList.remove("hidden")
-                    fetchGraphFullPrices()
+                document.getElementById(currentHours).classList.add("current");
+            }
+
+            async function fetchPricesTable() {
+                const start = new Date(Date.now());
+                start.setHours(00);
+                const end = new Date(Date.now() + 24 * 60 * 60 * 1000);
+                end.setHours(23);
+
+                const today = new Date(Date.now());
+                const currentHours = today.toLocaleTimeString("fi-FI", {
+                    hour: "numeric"
+                });
+
+                const dayPrice = getDayPrice();
+                const nightPrice = getNightPrice();
+                const nightPriceTimes = getNightHours();
+
+                var targetUrl =
+                    "https://sahkotin.fi/prices?start=" + start.toISOString() + "&end=2024-12-31T22:00:00.000Z";
+                const response = await fetch(targetUrl);
+                if (response.ok) {
+                    const data = await response.json();
+
+                    const pricesArray = [];
+                    for (let i = 0; i < data.prices.length; i++) {
+                        pricesArray.push(Math.round(data.prices[i].value * 1.24) / 10);
+                    }
+                    const maxPrice = Math.max(...pricesArray);
+                    const minPrice = Math.min(...pricesArray);
+
+                    for (let i = 0; i < data.prices.length; i++) {
+                        const element = document.createElement("tr");
+                        element.setAttribute("id", i);
+
+                        let hours = i;
+                        if (i > 23) hours = i - 24;
+                        else if (i > 47) hours = i - 48;
+
+                        const price = (data.prices[i].value * 1.24) / 10;
+
+                        let value = (data.prices[i].value * 1.24) / 10 + dayPrice;
+                        let icon = "☀️";
+                        if (nightPriceTimes.includes(i)) {
+                            value = (data.prices[i].value * 1.24) / 10 + nightPrice;
+                            icon = "🌙";
+                        }
+
+                        let row =
+                            '<td class="icon">' +
+                            icon +
+                            "</td><td>" +
+                            hours +
+                            ":00</td><td>" +
+                            price.toFixed(2) +
+                            "</td><td>" +
+                            value.toFixed(2) +
+                            "</td>";
+                        var tbody = document.querySelector("#priceTable tbody");
+                        var tr = document.createElement("tr");
+                        tr.setAttribute("id", "tr" + i);
+                        if (nightPriceTimes.includes(i)) {
+                            tr.classList.add("nightRow");
+                        }
+
+                        tr.innerHTML = row;
+                        tbody.appendChild(tr);
+                    }
                 }
-                if (type == 'table') {
-                    document.getElementById("priceButton").classList.remove("selected")
-                    document.getElementById("fullPriceButton").classList.remove("selected")
-                    document.getElementById("tableButton").classList.add("selected")
-                    priceWrapper.classList.add("hidden")
-                    fullPriceWrapper.classList.add("hidden")
-                    tableWrapper.classList.remove("hidden")
-                    tableWrapper.style.opacity = 1
-                    document.getElementById("selectedPrice").classList.add("hidden")
-                    fetchPricesTable()
+                document.getElementById("tr" + currentHours).classList.add("current");
+            }
+
+            function toggleVisibilty() {
+                const hours = document.getElementById("priceGraphWrapper");
+                const day = document.getElementById("fullPriceGraphWrapper");
+                const table = document.getElementById("priceTableWrapper");
+
+                for (const child of hours.children) {
+                    child.style.height = "0";
                 }
-            }, 400);
-        }
+                for (const child of day.children) {
+                    child.style.height = "0";
+                }
 
-        function selectHour(hour, priceText) {
-            document.getElementById("selectedPrice").innerHTML = priceText;
-        }
+                setTimeout(function () {
+                    hours.classList.toggle("hidden");
+                    day.classList.toggle("hidden");
+                    hours.innerHTML = "";
+                    day.innerHTML = "";
 
-        function emptySelectedHour() {
-            document.getElementById("selectedPrice").innerHTML = "";
-        }
+                    if (hours.classList.contains("hidden")) fetchGraphFullPrices();
+                    if (day.classList.contains("hidden")) fetchGraphPrices();
+                }, 400);
+            }
 
-        function setBackground(value) {
-            const loader = document.getElementById("loader")
-            loader.classList.add("hidden")
+            function setVisibility(type) {
+                const priceWrapper = document.getElementById("priceGraphWrapper");
+                const fullPriceWrapper = document.getElementById("fullPriceGraphWrapper");
+                const tableWrapper = document.getElementById("priceTableWrapper");
 
-            const body = document.getElementById("body")
-            if (value > 10) value = 10
-            else if (value < 0) value = 0
-            const colorValue = 100 - value * 10
+                for (const child of priceWrapper.children) {
+                    child.style.height = "0";
+                }
+                for (const child of fullPriceWrapper.children) {
+                    child.style.height = "0";
+                }
+                tableWrapper.style.opacity = 0;
 
-            body.style.backgroundColor = "hsla(" + colorValue + ", 100%, 30%, 1)";
+                setTimeout(function () {
+                    priceWrapper.innerHTML = "";
+                    fullPriceWrapper.innerHTML = "";
+                    document.querySelector("#priceTable tbody").innerHTML = "";
 
-            //            setTimeout(function() {
-            //                body.style.backgroundImage = "linear-gradient(140deg, hsla(" + colorValue + ", 100%, 40%, 1) 0%, hsla(" + colorValue + ", 100%, 25%, 1)";
-            //
-            //                window.CSS.registerProperty({
-            //                    name: "--item-color",
-            //                    syntax: "<color>",
-            //                    inherits: false,
-            //                    initialValue: "aqua",
-            //                });
-            //
-            //            }, 1000);
+                    if (type == "price") {
+                        document.getElementById("priceButton").classList.add("selected");
+                        document.getElementById("fullPriceButton").classList.remove("selected");
+                        document.getElementById("tableButton").classList.remove("selected");
+                        priceWrapper.classList.remove("hidden");
+                        fullPriceWrapper.classList.add("hidden");
+                        tableWrapper.classList.add("hidden");
+                        document.getElementById("selectedPrice").classList.remove("hidden");
+                        fetchGraphPrices();
+                    }
+                    if (type == "fullPrice") {
+                        document.getElementById("priceButton").classList.remove("selected");
+                        document.getElementById("fullPriceButton").classList.add("selected");
+                        document.getElementById("tableButton").classList.remove("selected");
+                        priceWrapper.classList.add("hidden");
+                        fullPriceWrapper.classList.remove("hidden");
+                        tableWrapper.classList.add("hidden");
+                        document.getElementById("selectedPrice").classList.remove("hidden");
+                        fetchGraphFullPrices();
+                    }
+                    if (type == "table") {
+                        document.getElementById("priceButton").classList.remove("selected");
+                        document.getElementById("fullPriceButton").classList.remove("selected");
+                        document.getElementById("tableButton").classList.add("selected");
+                        priceWrapper.classList.add("hidden");
+                        fullPriceWrapper.classList.add("hidden");
+                        tableWrapper.classList.remove("hidden");
+                        tableWrapper.style.opacity = 1;
+                        document.getElementById("selectedPrice").classList.add("hidden");
+                        fetchPricesTable();
+                    }
+                }, 400);
+            }
 
-            document.getElementById("buttonWrapper").classList.remove("hidden")
-        }
+            function selectHour(hour, priceText) {
+                document.getElementById("selectedPrice").innerHTML = priceText;
+            }
 
-        function getDayPrice() {
-            const price = 6.26372
-            // 3.20 + 2.79372 + 0.27
-            return price
-        }
+            function emptySelectedHour() {
+                document.getElementById("selectedPrice").innerHTML = "";
+            }
 
-        function getNightPrice() {
-            const price = 4.46372
-            // 1.40 + 2.79372 + 0.27
-            return price
-        }
+            function setBackground(value) {
+                const loader = document.getElementById("loader");
+                loader.classList.add("hidden");
 
-        function getNightHours() {
-            return [0, 1, 2, 3, 4, 5, 6, 22, 23, 24, 25, 26, 27, 28, 29, 30, 46, 47, 48]
-        }
+                const body = document.getElementById("body");
+                if (value > 10) value = 10;
+                else if (value < 0) value = 0;
+                const colorValue = 100 - value * 10;
+                body.style.backgroundColor = "hsla(" + colorValue + ", 100%, 30%, 1)";
 
-    </script>
+                document.getElementById("buttonWrapper").classList.remove("hidden");
+                document.getElementById("priceWrapper").classList.remove("hidden");
+                document.getElementById("graphWrapper").classList.remove("hidden");
+            }
 
+            function getDayPrice() {
+                const price = 6.26372;
+                // 3.20 + 2.79372 + 0.27
+                return price;
+            }
 
-</body>
+            function getNightPrice() {
+                const price = 4.46372;
+                // 1.40 + 2.79372 + 0.27
+                return price;
+            }
 
+            function getNightHours() {
+                return [0, 1, 2, 3, 4, 5, 6, 22, 23, 24, 25, 26, 27, 28, 29, 30, 46, 47, 48];
+            }
+        </script>
+    </body>
 </html>
