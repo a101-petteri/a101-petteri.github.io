@@ -247,19 +247,25 @@
             .MaxMinPriceBox {
                 display: flex;
                 width: 100%;
-                padding: 4px 0;
                 margin-bottom: 20px;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                gap: 8px;
             }
             .MaxMinPriceBox > div {
                 display: flex;
                 flex: 1;
                 text-align: center;
                 justify-content: center;
+                background-color: rgba(255, 255, 255, 0.2);
+                padding: 8px;
+                align-items: baseline;
+                border-radius: 2px;
             }
 
-            .MaxMinPriceBox > div > span {
+            .MaxMinPriceBox > div > .priceValue {
                 margin-left: 8px;
+            }
+            .MaxMinPriceBox > div > .miniText {
+                font-size: 10px;
             }
 
             .loader {
@@ -314,9 +320,9 @@
                 <div id="fullPriceGraphWrapper" class="fullPriceGraphWrapper hidden"></div>
                 <div id="priceTableWrapper" class="priceTableWrapper hidden">
                     <div class="MaxMinPriceBox">
-                        <div>⬆ <span id="maxPriceText"></span></div>
-                        <div>⬇ <span id="minPriceText"></span></div>
-                        <div>↕ <span id="avgPriceText"></span></div>
+                        <div><span class="miniText">max</span><span id="maxPriceText" class="priceValue"></span></div>
+                        <div><span class="miniText">min</span><span id="minPriceText" class="priceValue"></span></div>
+                        <div><span class="miniText">avg</span><span id="avgPriceText" class="priceValue"></span></div>
                     </div>
                     <table id="priceTable">
                         <tbody></tbody>
@@ -350,6 +356,7 @@
 
                     document.getElementById("dayPriceLegend").innerHTML = getDayPrice();
                     document.getElementById("nightPriceLegend").innerHTML = getNightPrice();
+                    fetchPricesTable();
                 }
             }
             async function fetchGraphPrices() {
@@ -675,7 +682,7 @@
                 setTimeout(function () {
                     priceWrapper.innerHTML = "";
                     fullPriceWrapper.innerHTML = "";
-                    document.querySelector("#priceTable tbody").innerHTML = "";
+                    //document.querySelector("#priceTable tbody").innerHTML = "";
 
                     if (type == "price") {
                         document.getElementById("priceButton").classList.add("selected");
@@ -706,9 +713,9 @@
                         tableWrapper.classList.remove("hidden");
                         tableWrapper.style.opacity = 1;
                         document.getElementById("selectedPrice").classList.add("hidden");
-                        fetchPricesTable();
+                        //fetchPricesTable();
                     }
-                }, 400);
+                }, 500);
             }
 
             function selectHour(hour, priceText) {
