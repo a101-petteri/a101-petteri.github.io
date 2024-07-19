@@ -244,6 +244,24 @@
                 text-align: left;
             }
 
+            .MaxMinPriceBox {
+                display: flex;
+                width: 100%;
+                padding: 4px 0;
+                margin-bottom: 20px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            .MaxMinPriceBox > div {
+                display: flex;
+                flex: 1;
+                text-align: center;
+                justify-content: center;
+            }
+
+            .MaxMinPriceBox > div > span {
+                margin-left: 8px;
+            }
+
             .loader {
                 text-align: center;
                 opacity: 0.4;
@@ -295,6 +313,11 @@
 
                 <div id="fullPriceGraphWrapper" class="fullPriceGraphWrapper hidden"></div>
                 <div id="priceTableWrapper" class="priceTableWrapper hidden">
+                    <div class="MaxMinPriceBox">
+                        <div>⬆ <span id="maxPriceText"></span></div>
+                        <div>⬇ <span id="minPriceText"></span></div>
+                        <div>↕ <span id="avgPriceText"></span></div>
+                    </div>
                     <table id="priceTable">
                         <tbody></tbody>
                     </table>
@@ -558,12 +581,16 @@
                 if (response.ok) {
                     const data = await response.json();
 
+                    let total = 0;
+
                     const pricesArray = [];
                     for (let i = 0; i < data.prices.length; i++) {
                         pricesArray.push(Math.round(data.prices[i].value * 1.24) / 10);
+                        total += data.prices[i].value;
                     }
                     const maxPrice = Math.max(...pricesArray);
                     const minPrice = Math.min(...pricesArray);
+                    const avgPrice = pricesArray.reduce((a, b) => a + b) / pricesArray.length;
 
                     for (let i = 0; i < data.prices.length; i++) {
                         const element = document.createElement("tr");
@@ -602,6 +629,9 @@
                         tr.innerHTML = row;
                         tbody.appendChild(tr);
                     }
+                    document.getElementById("maxPriceText").innerHTML = maxPrice.toFixed(2);
+                    document.getElementById("minPriceText").innerHTML = minPrice.toFixed(2);
+                    document.getElementById("avgPriceText").innerHTML = avgPrice.toFixed(2);
                 }
                 document.getElementById("tr" + currentHours).classList.add("current");
             }
