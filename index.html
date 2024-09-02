@@ -100,7 +100,9 @@
                 text-align: center;
                 height: 0;
                 background-color: rgba(255, 255, 255, 0.5);
-                transition: height 400ms ease-in-out;
+                transition:
+                    height 400ms ease-in-out,
+                    opacity 400ms ease-in-out;
                 min-width: calc(100% / 24 - 6px);
                 box-sizing: border-box;
             }
@@ -231,6 +233,7 @@
                 width: 0 !important;
                 background-color: transparent !important;
                 min-width: 0 !important;
+                opacity: 0;
             }
 
             .bottomRuler,
@@ -348,14 +351,13 @@
                 if (response.ok) {
                     const data = await response.json();
                     const price = data.prices[0].value;
-                    document.getElementById("price").innerHTML = ((price * 1.255) / 10).toFixed(1);
+                    document.getElementById("price").innerHTML = ((price * getVat()) / 10).toFixed(1);
                     document.getElementById("date").innerHTML = now.toLocaleDateString();
                     document.getElementById("time").innerHTML =
                         now.toLocaleTimeString("fi-FI", {
                             hour: "2-digit"
                         }) + ":00";
-                    setBackground(Math.round(price * 1.255) / 10);
-
+                    setBackground(Math.round(price * getVat()) / 10);
                     document.getElementById("dayPriceLegend").innerHTML = getDayPrice();
                     document.getElementById("nightPriceLegend").innerHTML = getNightPrice();
                     fetchPricesTable();
@@ -394,22 +396,22 @@
                     let topRulerHeight = 80.64516129;
                     let topRulerText = 10;
 
-                    if (((maxPrice * 1.255) / 10).toFixed() < 5) {
+                    if (((maxPrice * getVat()) / 10).toFixed() < 5) {
                         maxPrice = 41;
                         showBottomRuler = true;
                         showTopRuler = false;
                     }
 
-                    if (((maxPrice * 1.255) / 10).toFixed() > 5 && ((maxPrice * 1.255) / 10).toFixed() < 20) {
+                    if (((maxPrice * getVat()) / 10).toFixed() > 5 && ((maxPrice * getVat()) / 10).toFixed() < 20) {
                         showBottomRuler = true;
                         showTopRuler = true;
                     }
 
-                    if (((maxPrice * 1.255) / 10).toFixed() > 20) {
+                    if (((maxPrice * getVat()) / 10).toFixed() > 20) {
                         showBottomRuler = false;
                         showTopRuler = true;
                         topRulerHeight = avgPrice;
-                        topRulerText = ((avgPrice * 1.255) / 10).toFixed(0);
+                        topRulerText = ((avgPrice * getVat()) / 10).toFixed(0);
                     }
 
                     if ((topRulerHeight / maxPrice) * 100 > 100) {
@@ -432,6 +434,7 @@
 
                         setTimeout(function () {
                             bottomRulerWrapper.style.height = (40.32258065 / maxPrice) * 100 + "%";
+                            bottomRulerWrapper.style.opacity = 1;
                         }, 10);
                     }
 
@@ -451,6 +454,7 @@
 
                         setTimeout(function () {
                             topRulerWrapper.style.height = (topRulerHeight / maxPrice) * 100 + "%";
+                            topRulerWrapper.style.opacity = 1;
                         }, 10);
                     }
 
@@ -469,17 +473,17 @@
                             if (i < 24)
                                 selectHour(
                                     i,
-                                    i + ":00 - " + ((data.prices[i].value * 1.255) / 10).toFixed(1) + "snt/kWh"
+                                    i + ":00 - " + ((data.prices[i].value * getVat()) / 10).toFixed(1) + "snt/kWh"
                                 );
                             else if (i >= 48)
                                 selectHour(
                                     i,
-                                    i - 48 + ":00 - " + ((data.prices[i].value * 1.255) / 10).toFixed(1) + "snt/kWh"
+                                    i - 48 + ":00 - " + ((data.prices[i].value * getVat()) / 10).toFixed(1) + "snt/kWh"
                                 );
                             else
                                 selectHour(
                                     i,
-                                    i - 24 + ":00 - " + ((data.prices[i].value * 1.255) / 10).toFixed(1) + "snt/kWh"
+                                    i - 24 + ":00 - " + ((data.prices[i].value * getVat()) / 10).toFixed(1) + "snt/kWh"
                                 );
                         };
                         element.onmouseout = function () {
@@ -517,7 +521,7 @@
 
                     const pricesArray = [];
                     for (let i = 0; i < data.prices.length; i++) {
-                        pricesArray.push(Math.round(data.prices[i].value * 1.255) / 10);
+                        pricesArray.push(Math.round(data.prices[i].value * getVat()) / 10);
                     }
                     const maxPrice = Math.max(...pricesArray) + dayPrice;
 
@@ -535,9 +539,9 @@
                         const bottom = document.createElement("div");
                         bottom.classList.add("bottom");
 
-                        let value = ((data.prices[i].value * 1.255) / 10 + dayPrice).toFixed(1);
+                        let value = ((data.prices[i].value * getVat()) / 10 + dayPrice).toFixed(1);
                         if (nightPriceTimes.includes(i)) {
-                            value = ((data.prices[i].value * 1.255) / 10 + nightPrice).toFixed(1);
+                            value = ((data.prices[i].value * getVat()) / 10 + nightPrice).toFixed(1);
                         }
 
                         element.onmouseover = function () {
@@ -554,13 +558,13 @@
                         document.getElementById(i).appendChild(bottom);
 
                         let wrapperHeight =
-                            ((Math.round(data.prices[i].value * 1.255) / 10 + dayPrice) / maxPrice) * 100;
+                            ((Math.round(data.prices[i].value * getVat()) / 10 + dayPrice) / maxPrice) * 100;
                         const maxHeight = document.getElementById("fullPriceGraphWrapper").clientHeight;
                         let topHeight = (maxHeight / maxPrice) * dayPrice;
 
                         if (nightPriceTimes.includes(i)) {
                             wrapperHeight =
-                                ((Math.round(data.prices[i].value * 1.255) / 10 + nightPrice) / maxPrice) * 100;
+                                ((Math.round(data.prices[i].value * getVat()) / 10 + nightPrice) / maxPrice) * 100;
                             topHeight = (maxHeight / maxPrice) * nightPrice;
                         }
 
@@ -598,7 +602,7 @@
 
                     const pricesArray = [];
                     for (let i = 0; i < data.prices.length; i++) {
-                        pricesArray.push((data.prices[i].value * 1.255) / 10);
+                        pricesArray.push((data.prices[i].value * getVat()) / 10);
                         total += data.prices[i].value;
                     }
                     const maxPrice = Math.max(...pricesArray);
@@ -613,12 +617,12 @@
                         if (i > 23) hours = i - 24;
                         else if (i > 47) hours = i - 48;
 
-                        const price = (data.prices[i].value * 1.255) / 10;
+                        const price = (data.prices[i].value * getVat()) / 10;
 
-                        let value = (data.prices[i].value * 1.255) / 10 + dayPrice;
+                        let value = (data.prices[i].value * getVat()) / 10 + dayPrice;
                         let icon = "☀️";
                         if (nightPriceTimes.includes(i)) {
-                            value = (data.prices[i].value * 1.255) / 10 + nightPrice;
+                            value = (data.prices[i].value * getVat()) / 10 + nightPrice;
                             icon = "🌙";
                         }
 
@@ -676,10 +680,15 @@
                 const priceWrapper = document.getElementById("priceGraphWrapper");
                 const fullPriceWrapper = document.getElementById("fullPriceGraphWrapper");
                 const tableWrapper = document.getElementById("priceTableWrapper");
+                const topRuler = document.getElementById("topRulerWrapper");
+                const bottomRuler = document.getElementById("bottomRulerWrapper");
 
                 for (const child of priceWrapper.children) {
                     child.style.height = "0";
                 }
+                if (topRuler) topRuler.style.opacity = 0;
+                if (bottomRuler) bottomRuler.style.opacity = 0;
+
                 for (const child of fullPriceWrapper.children) {
                     child.style.height = "0";
                 }
@@ -747,6 +756,11 @@
                 document.getElementById("buttonWrapper").classList.remove("hidden");
                 document.getElementById("priceWrapper").classList.remove("hidden");
                 document.getElementById("graphWrapper").classList.remove("hidden");
+            }
+
+            function getVat() {
+                // updated VAT percentage 2.9.2024
+                return 1.255;
             }
 
             function getDayPrice() {
