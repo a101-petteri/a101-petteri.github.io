@@ -206,6 +206,7 @@
             .priceTableWrapper > table {
                 border-collapse: collapse;
                 width: 100%;
+                margin-bottom: 20px;
             }
 
             .priceTableWrapper > table > tbody > tr > td {
@@ -264,11 +265,9 @@
                 padding: 8px;
                 align-items: baseline;
                 border-radius: 2px;
+                gap: 4px;
             }
 
-            .MaxMinPriceBox > div > .priceValue {
-                margin-left: 8px;
-            }
             .MaxMinPriceBox > div > .miniText {
                 font-size: 10px;
             }
@@ -332,7 +331,16 @@
                     <table id="priceTable">
                         <tbody></tbody>
                     </table>
-                    <div>Day: <span id="dayPriceLegend"></span> // Night: <span id="nightPriceLegend"></span></div>
+                    <div class="MaxMinPriceBox">
+                        <div>
+                            <span class="miniText">Day: </span><span id="dayPriceLegend" class="priceValue"></span>
+                            <span class="miniText priceValue">snt/kWh</span>
+                        </div>
+                        <div>
+                            <span class="miniText">Night: </span><span id="nightPriceLegend" class="priceValue"></span>
+                            <span class="miniText priceValue">snt/kWh</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="buttonWrapper" class="buttonWrapper hidden">
@@ -358,8 +366,9 @@
                             hour: "2-digit"
                         }) + ":00";
                     setBackground(Math.round(price * getVat()) / 10);
-                    document.getElementById("dayPriceLegend").innerHTML = getDayPrice();
-                    document.getElementById("nightPriceLegend").innerHTML = getNightPrice();
+
+                    document.getElementById("dayPriceLegend").innerHTML = getDayPrice().toFixed(4);
+                    document.getElementById("nightPriceLegend").innerHTML = getNightPrice().toFixed(4);
                     fetchPricesTable();
                 }
             }
@@ -764,14 +773,14 @@
             }
 
             function getDayPrice() {
-                const price = 3.2 + 2.79372 + 0.59;
-                // siirto + vero + marginaali
+                const price = 3.3 + 2.8112 + 0.2 + 0.6;
+                // siirto + vero + + huoltovarmuusmaksu + marginaali
                 return price;
             }
 
             function getNightPrice() {
-                const price = 1.4 + 2.79372 + 0.59;
-                // siirto + vero + marginaali
+                const price = 1.42 + 2.8112 + 0.2 + 0.6;
+                // siirto + vero + huoltovarmuusmaksu + marginaali
                 return price;
             }
 
