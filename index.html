@@ -65,7 +65,7 @@
 
             .graphWrapper {
                 height: 100%;
-                margin: 20px;
+                margin: 0 20px;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -103,7 +103,7 @@
                 transition:
                     height 400ms ease-in-out,
                     opacity 400ms ease-in-out;
-                min-width: calc(100% / 24 - 6px);
+                min-width: calc(100% / 24 - 7px);
                 box-sizing: border-box;
             }
 
@@ -192,7 +192,7 @@
 
             .priceTableWrapper {
                 min-height: 80%;
-                margin: 20px;
+                margin: 0 20px 20px 20px;
                 width: 100%;
                 min-width: 320px;
                 overflow-y: auto;
@@ -206,7 +206,7 @@
             .priceTableWrapper > table {
                 border-collapse: collapse;
                 width: 100%;
-                margin-bottom: 20px;
+                margin: 20px 0;
             }
 
             .priceTableWrapper > table > tbody > tr > td {
@@ -253,7 +253,6 @@
             .MaxMinPriceBox {
                 display: flex;
                 width: 100%;
-                margin-bottom: 20px;
                 gap: 8px;
             }
             .MaxMinPriceBox > div {
@@ -359,19 +358,19 @@
                 if (response.ok) {
                     const data = await response.json();
                     const price = data.prices[0].value;
-                    
+
                     document.getElementById("price").innerHTML = ((price * getVat()) / 10).toFixed(1);
                     document.getElementById("date").innerHTML = now.toLocaleDateString();
                     document.getElementById("time").innerHTML =
                         now.toLocaleTimeString("fi-FI", {
                             hour: "2-digit"
                         }) + ":00";
-                    
+
                     setBackground(Math.round(price * getVat()) / 10);
-                    
+
                     document.getElementById("dayPriceLegend").innerHTML = "+" + getDayPrice().toFixed(2);
                     document.getElementById("nightPriceLegend").innerHTML = "+" + getNightPrice().toFixed(2);
-                    
+
                     fetchPricesTable();
                 }
             }
@@ -536,6 +535,28 @@
                         pricesArray.push(Math.round(data.prices[i].value * getVat()) / 10);
                     }
                     const maxPrice = Math.max(...pricesArray) + dayPrice;
+                    const avgPrice = pricesArray.reduce((a, b) => a + b) / pricesArray.length;
+
+                    // SET AVG RULER =>
+                    topRulerHeight = avgPrice;
+                    topRulerText = avgPrice.toFixed(0);
+
+                    const topRulerWrapper = document.createElement("div");
+                    topRulerWrapper.setAttribute("id", "topRulerWrapper");
+                    topRulerWrapper.classList.add("topRulerWrapper");
+
+                    document.getElementById("fullPriceGraphWrapper").appendChild(topRulerWrapper);
+
+                    const topRuler = document.createElement("div");
+                    topRuler.setAttribute("id", "topRuler");
+                    topRuler.classList.add("topRuler");
+                    topRuler.innerHTML = topRulerText + " snt";
+                    document.getElementById("topRulerWrapper").appendChild(topRuler);
+
+                    setTimeout(function () {
+                        topRulerWrapper.style.height = (topRulerHeight / maxPrice) * 100 + "%";
+                        topRulerWrapper.style.opacity = 1;
+                    }, 10);
 
                     for (let i = 0; i < data.prices.length; i++) {
                         if (i == "24" || i == "48") {
