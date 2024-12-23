@@ -232,6 +232,7 @@
             .bottomRulerWrapper,
             .topRulerWrapper {
                 width: 0 !important;
+                margin: 0 0 0 -5px;
                 background-color: transparent !important;
                 min-width: 0 !important;
                 opacity: 0;
@@ -249,6 +250,7 @@
                 color: rgba(255, 255, 255, 0.2);
                 text-align: left;
                 font-size: 14px;
+                margin-left: 5px;
             }
 
             .MaxMinPriceBox {
@@ -532,16 +534,18 @@
                     const data = await response.json();
 
                     const pricesArray = [];
+                    let total = 0;
                     for (let i = 0; i < data.prices.length; i++) {
                         let value = (data.prices[i].value * getVat()) / 10 + dayPrice;
                         if (nightPriceTimes.includes(i)) {
                             value = (data.prices[i].value * getVat()) / 10 + nightPrice;
                         }
                         pricesArray.push(value);
+                        total += value;
                     }
 
                     const maxPrice = Math.max(...pricesArray);
-                    const avgPrice = pricesArray.reduce((a, b) => a + b) / pricesArray.length;
+                    const avgPrice = total / pricesArray.length;
 
                     // SET AVG RULER =>
                     topRulerHeight = avgPrice;
@@ -641,12 +645,13 @@
 
                     const pricesArray = [];
                     for (let i = 0; i < data.prices.length; i++) {
-                        pricesArray.push((data.prices[i].value * getVat()) / 10);
-                        total += data.prices[i].value;
+                        value = (data.prices[i].value * getVat()) / 10;
+                        pricesArray.push(value);
+                        total += value;
                     }
                     const maxPrice = Math.max(...pricesArray);
                     const minPrice = Math.min(...pricesArray);
-                    const avgPrice = pricesArray.reduce((a, b) => a + b) / pricesArray.length;
+                    const avgPrice = total / pricesArray.length;
 
                     for (let i = 0; i < data.prices.length; i++) {
                         const element = document.createElement("tr");
