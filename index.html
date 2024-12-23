@@ -112,7 +112,7 @@
                 border-radius: 4px 4px 0 0;
                 height: 0;
                 transition: height 400ms ease-in-out;
-                min-width: calc(100% / 24 - 6px);
+                min-width: calc(100% / 24 - 7px);
                 display: flex;
                 flex-direction: column;
             }
@@ -532,9 +532,14 @@
 
                     const pricesArray = [];
                     for (let i = 0; i < data.prices.length; i++) {
-                        pricesArray.push(Math.round(data.prices[i].value * getVat()) / 10);
+                        let value = (data.prices[i].value * getVat()) / 10 + dayPrice;
+                        if (nightPriceTimes.includes(i)) {
+                            value = (data.prices[i].value * getVat()) / 10 + nightPrice;
+                        }
+                        pricesArray.push(value);
                     }
-                    const maxPrice = Math.max(...pricesArray) + dayPrice;
+
+                    const maxPrice = Math.max(...pricesArray);
                     const avgPrice = pricesArray.reduce((a, b) => a + b) / pricesArray.length;
 
                     // SET AVG RULER =>
