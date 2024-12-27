@@ -96,7 +96,7 @@
 
             .priceGraphWrapper > div {
                 width: 100%;
-                border-radius: 4px 4px 0 0;
+                border-radius: 40px 40px 0 0;
                 text-align: center;
                 height: 0;
                 background-color: rgba(255, 255, 255, 0.5);
@@ -109,7 +109,7 @@
 
             .fullPriceGraphWrapper > div {
                 width: 100%;
-                border-radius: 4px 4px 0 0;
+                border-radius: 40px 40px 0 0;
                 height: 0;
                 transition: height 400ms ease-in-out;
                 min-width: calc(100% / 24 - 7px);
@@ -128,7 +128,7 @@
                 height: 40px;
                 background-color: rgba(255, 255, 255, 0.2);
                 border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-                border-radius: 4px 4px 0 0;
+                border-radius: 40px 40px 0 0;
                 display: flex;
             }
 
@@ -545,6 +545,7 @@
                     }
 
                     const maxPrice = Math.max(...pricesArray);
+                    console.log(maxPrice);
                     const avgPrice = total / pricesArray.length;
 
                     // SET AVG RULER =>
@@ -600,14 +601,11 @@
                         document.getElementById(i).appendChild(top);
                         document.getElementById(i).appendChild(bottom);
 
-                        let wrapperHeight =
-                            ((Math.round(data.prices[i].value * getVat()) / 10 + dayPrice) / maxPrice) * 100;
+                        let wrapperHeight = (value / maxPrice) * 100;
                         const maxHeight = document.getElementById("fullPriceGraphWrapper").clientHeight;
                         let topHeight = (maxHeight / maxPrice) * dayPrice;
 
                         if (nightPriceTimes.includes(i)) {
-                            wrapperHeight =
-                                ((Math.round(data.prices[i].value * getVat()) / 10 + nightPrice) / maxPrice) * 100;
                             topHeight = (maxHeight / maxPrice) * nightPrice;
                         }
 
