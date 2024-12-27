@@ -424,7 +424,7 @@
                     if (((maxPrice * getVat()) / 10).toFixed() > 20) {
                         showBottomRuler = false;
                         showTopRuler = true;
-                        topRulerHeight = avgPrice;
+                        topRulerHeight = avgPrice.toFixed(0);
                         topRulerText = ((avgPrice * getVat()) / 10).toFixed(0);
                     }
 
@@ -549,7 +549,8 @@
                     const avgPrice = total / pricesArray.length;
 
                     // SET AVG RULER =>
-                    topRulerHeight = avgPrice;
+                    topRulerHeight = avgPrice.toFixed(0);
+                    console.log(topRulerHeight);
                     topRulerText = avgPrice.toFixed(0);
 
                     const topRulerWrapper = document.createElement("div");
