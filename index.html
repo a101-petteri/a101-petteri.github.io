@@ -790,6 +790,8 @@
                 const loader = document.getElementById("loader");
                 loader.classList.add("hidden");
 
+                value = value / 2;
+
                 const body = document.getElementById("body");
                 if (value > 10) value = 10;
                 else if (value < 0) value = 0;
