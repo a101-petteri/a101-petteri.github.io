@@ -545,12 +545,10 @@
                     }
 
                     const maxPrice = Math.max(...pricesArray);
-                    console.log(maxPrice);
                     const avgPrice = total / pricesArray.length;
 
                     // SET AVG RULER =>
                     topRulerHeight = avgPrice.toFixed(0);
-                    console.log(topRulerHeight);
                     topRulerText = avgPrice.toFixed(0);
 
                     const topRulerWrapper = document.createElement("div");
@@ -593,7 +591,6 @@
                         }
 
                         let value3 = nightPriceTimes.includes(i) ? nightPrice : dayPrice;
-                        console.log(value3);
 
                         element.onmouseover = function () {
                             if (i < 24)
