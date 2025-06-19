@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>Raflaamo - Accessibile color helper tool</title>
+        <title>Accessibile color helper tool</title>
         <style type="text/css">
             body {
                 font-family: sans-serif;
@@ -57,10 +57,10 @@
     <body id="body">
         <div class="wrapper">
             <div class="top">
-                <h1>Raflaamo - Accesible color helper</h1>
+                <h1>Accesible color helper</h1>
                 <p>
                     Enter colors HEX value and select wanted theme. The tool will tell you if the colors are accessibile
-                    for Raflaamo use. And if not, the tool will suggest a nearest color that should tick all the boxes.
+                    for use. And if not, the tool will suggest a nearest color that should tick all the boxes.
                 </p>
                 <form action="javascript:handleIt()">
                     <label for="color">Color:</label>
@@ -123,21 +123,9 @@
                 <p>
                     Heading and link colors must comply with accessibility requirements. Selected colors contrast
                     relative to the background color of the selected theme must meet WCAG 2.2 AA requirements. The link
-                    color is also examined in relation to the black background of Raflaamo's top bar, where the "Reserve
+                    color is also examined in relation to the black background of header, where the "Reserve
                     a table" button is displayed.
                 </p>
-
-                <h3>Dark theme</h3>
-                <ul>
-                    <li>
-                        Heading color must have a contrast ratio of at least 4.5:1 relative to Raflaamo's dark
-                        background color (#282828).
-                    </li>
-                    <li>
-                        The link color must have a contrast ratio of at least 4.5:1 relative to Raflaamo's dark
-                        background color (#282828) AND 3:1 relative to the black background color (#111111).
-                    </li>
-                </ul>
 
                 <h3>Light theme</h3>
                 <ul>
@@ -148,6 +136,18 @@
                     <li>
                         The link color must have a contrast ratio of at least 4.5:1 relative to Raflaamo's light
                         background color (#F5F0EB) AND 3:1 relative to the black background color (#111111).
+                    </li>
+                </ul>
+
+                <h3>Dark theme</h3>
+                <ul>
+                    <li>
+                        Heading color must have a contrast ratio of at least 4.5:1 relative to Raflaamo's dark
+                        background color (#282828).
+                    </li>
+                    <li>
+                        The link color must have a contrast ratio of at least 4.5:1 relative to Raflaamo's dark
+                        background color (#282828) AND 3:1 relative to the black background color (#111111).
                     </li>
                 </ul>
             </div>
