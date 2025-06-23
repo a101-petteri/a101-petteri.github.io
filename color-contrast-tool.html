@@ -4,6 +4,10 @@
         <meta charset="UTF-8" />
         <title>Accessibile color helper tool</title>
         <style type="text/css">
+            :root {
+                --newColor: red;
+            }
+
             body {
                 font-family: sans-serif;
                 font-size: 16px;
@@ -51,6 +55,13 @@
             tr.tableHeading > td {
                 background-color: #f5f0eb;
             }
+
+            .themeCell,
+            .blackCell,
+            .blackCellNew {
+                background-color: #111111;
+                color: var(--newColor);
+            }
         </style>
     </head>
 
@@ -69,7 +80,7 @@
                         class="monospace"
                         id="color"
                         name="color"
-                        value="#"
+                        value="#111111"
                         maxlength="7"
                         minlength="7" />
                     <br />
@@ -86,6 +97,13 @@
             <div class="bottom hidden" id="bottom">
                 <h2>Color: <span id="colorText" class="monospace"></span>, <span id="themeText"></span> theme</h2>
                 <table>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th>contrast</th>
+                        <th></th>
+                        <th>closest accessible color</th>
+                    </tr>
                     <tr class="tableHeading">
                         <td><b>Heading:</b></td>
                         <td class="small">Theme BG:</td>
@@ -116,6 +134,19 @@
                         </td>
                     </tr>
                 </table>
+                <table>
+                    <tr>
+                        <td colspan="2"><b>Example</b></td>
+                    </tr>
+                    <tr>
+                        <td>Theme BG:</td>
+                        <td class="themeCell" id="themeCell1">Lorem ipsum dolor</td>
+                    </tr>
+                    <tr>
+                        <td>Black BG:</td>
+                        <td class="blackCell">Lorem ipsum dolor</td>
+                    </tr>
+                </table>
             </div>
         </div>
         <div class="wrapper noBG">
@@ -123,30 +154,31 @@
                 <p>
                     Heading and link colors must comply with accessibility requirements. Selected colors contrast
                     relative to the background color of the selected theme must meet WCAG 2.2 AA requirements. The link
-                    color is also examined in relation to the black background of header, where the custom colored button is displayed.
+                    color is also examined in relation to the black background of header, where the custom colored
+                    button is displayed.
                 </p>
 
                 <h3>Light theme</h3>
                 <ul>
                     <li>
-                        Heading color must have a contrast ratio of at least 4.5:1 relative to light
-                        background color (#F5F0EB).
+                        Heading color must have a contrast ratio of at least 4.5:1 relative to light background color
+                        (#F5F0EB).
                     </li>
                     <li>
-                        The link color must have a contrast ratio of at least 4.5:1 relative to light
-                        background color (#F5F0EB) <b>AND</b> 3:1 relative to the black background color (#111111).
+                        The link color must have a contrast ratio of at least 4.5:1 relative to light background color
+                        (#F5F0EB) <b>AND</b> 3:1 relative to the black background color (#111111).
                     </li>
                 </ul>
 
                 <h3>Dark theme</h3>
                 <ul>
                     <li>
-                        Heading color must have a contrast ratio of at least 4.5:1 relative to dark
-                        background color (#282828).
+                        Heading color must have a contrast ratio of at least 4.5:1 relative to dark background color
+                        (#282828).
                     </li>
                     <li>
-                        The link color must have a contrast ratio of at least 4.5:1 relative to dark
-                        background color (#282828) <b>AND</b> 3:1 relative to the black background color (#111111).
+                        The link color must have a contrast ratio of at least 4.5:1 relative to dark background color
+                        (#282828) <b>AND</b> 3:1 relative to the black background color (#111111).
                     </li>
                 </ul>
             </div>
@@ -205,10 +237,17 @@
                     closestLinkContrast = findClosestAccessibleColor(color, getBgColor("black"), 3);
                 }
 
-                console.log(closestLinkContrast);
-
                 let linkTextNew = document.getElementById("linkTextNew");
                 linkTextNew.innerHTML = closestLinkContrast;
+                // <--- LINKS
+
+                // EXAMPLES -->
+                const themeCell1 = document.getElementById("themeCell1");
+                themeCell1.style.backgroundColor = getBgColor(theme);
+
+                var root = document.querySelector(":root");
+                root.style.setProperty("--newColor", color);
+                // <-- EXAMPLES
             }
 
             function getBgColor(theme) {
