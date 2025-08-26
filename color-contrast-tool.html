@@ -57,10 +57,13 @@
             }
 
             .themeCell,
-            .blackCell,
-            .blackCellNew {
+            .blackCell {
                 background-color: #111111;
                 color: var(--newColor);
+            }
+
+            .colorError {
+                color: Red;
             }
         </style>
     </head>
@@ -93,6 +96,7 @@
                     <br />
                     <br />
                     <input type="submit" value="Submit >" />
+                    <p id="colorError" class="colorError hidden">Check the color value!</p>
                 </form>
             </div>
             <div class="bottom hidden" id="bottom">
@@ -189,6 +193,15 @@
             function handleIt() {
                 var color = document.getElementById("color").value;
                 var theme = document.querySelector('input[name="theme"]:checked').value;
+
+                var reg = /^#([0-9a-f]{3}){1,2}$/i;
+                var valid = reg.test(color);
+
+                if (!valid) {
+                    document.getElementById("colorError").classList.remove("hidden");
+                    return;
+                }
+                document.getElementById("colorError").classList.add("hidden");
 
                 document.getElementById("bottom").classList.remove("hidden");
 
