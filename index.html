@@ -364,8 +364,12 @@
         <script>
             async function fetchData() {
                 const now = new Date(Date.now());
-
-                var targetUrl = "https://sahkotin.fi/prices?start=" + now.toISOString() + "&end=" + now.toISOString();
+                now.setMinutes(00);
+                now.setSeconds(00);
+                now.setMilliseconds(00)
+                const nowISO = now.toISOString()
+    
+                var targetUrl = "https://sahkotin.fi/prices?start=" + nowISO + "&end=" + nowISO;
                 const response = await fetch(targetUrl);
                 if (response.ok) {
                     const data = await response.json();
