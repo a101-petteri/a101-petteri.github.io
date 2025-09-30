@@ -382,7 +382,6 @@
             const nowISO = now.toISOString()
 
             var targetUrl = "https://sahkotin.fi/prices?fix&vat&start=" + now.toISOString() + "&end=" + now.toISOString();
-            console.log(now.toISOString(), nowISO)
             const response = await fetch(targetUrl);
             if (response.ok) {
                 const data = await response.json();
@@ -416,8 +415,6 @@
             const currentHours = today.toLocaleTimeString("fi-FI", {
                 hour: "numeric"
             });
-
-            console.log(start)
 
             var targetUrl = "https://sahkotin.fi/prices?fix&vat&start=" + startISO + "&end=2026-12-31T22:00:00.000Z";
             const response = await fetch(targetUrl);
@@ -554,9 +551,8 @@
             const startISO = start.toISOString()
 
             const now = new Date(Date.now());
-            const roundedMinutes = (Math.round(now.getMinutes() / 15) * 15) % 60;
-            now.setMinutes(roundedMinutes)
-            const currentTime = now.toLocaleTimeString("fi-FI", {
+            const roundedNow = new Date(now.getTime()-(now.getTime() % (1000 * 60 * 15)))
+            const currentTime = roundedNow.toLocaleTimeString("fi-FI", {
                 hour: "2-digit", minute: "2-digit"
             });
 
@@ -604,7 +600,6 @@
                     let dateValue = data.prices[i].date
 
                     const intervalDate = new Date(dateValue);
-                    console.log()
                     const intervalTime = intervalDate.toLocaleTimeString("fi-FI", {
                         hour: "2-digit", minute: "2-digit"
                     });
