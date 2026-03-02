@@ -1,7 +1,7 @@
 {
   "name": "SPOT prices",
   "short_name": "SPOT",
-  "start_url": "index.html",
+  "start_url": "index-2.html",
   "display": "standalone",
   "background_color": "#363636",
   "theme_color": "#333333",
