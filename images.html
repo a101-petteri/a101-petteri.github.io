@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <body onload="load()" id="body"></body>
+  <script>
+    function load() {
+      let params = new URLSearchParams(document.location.search);
+      let id = params.get("id");
+
+      var image =
+        "<img srcset=" +
+        "https://cdn.s-cloud.fi/v1/q60/assets/dam-id/" +
+        id +
+        ".png src=" +
+        "https://cdn.s-cloud.fi/v1/assets/dam-id/" +
+        id +
+        " />";
+
+      var body = document.querySelector("#body");
+      var element = document.createElement("div");
+
+      element.innerHTML = image;
+      body.appendChild(element);
+    }
+  </script>
+</html>
