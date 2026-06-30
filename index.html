@@ -263,6 +263,10 @@
         text-align: center;
       }
 
+      .priceTableWrapper > table > tbody > tr:nth-child(4n+1) > td {
+        border-top: solid 2px rgba(255, 255, 255, 0.5);
+      }
+
       td.icon {
         width: auto !important;
       }
@@ -944,6 +948,95 @@
       }
 
       async function fetchPricesTable() {
+        fetchPricesTableQuarter()
+      }
+
+      async function fetchPricesTableQuarter() {
+        const start = new Date(Date.now());
+        start.setHours(00);
+        start.setMinutes(00);
+        start.setSeconds(00);
+        start.setMilliseconds(00);
+        const startISO = start.toISOString();
+
+        const today = new Date(Date.now());
+        const currentHours = today.toLocaleTimeString("fi-FI", {
+          hour: "numeric",
+        });
+
+        const now = new Date(Date.now());
+        const roundedNow = new Date(
+          now.getTime() - (now.getTime() % (1000 * 60 * 15)),
+        );
+        const currentTime = roundedNow.toLocaleTimeString("fi-FI", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        const dayPrice = getDayPrice();
+        const nightPrice = getNightPrice();
+        const nightPriceTimes = getNightHours();
+
+        var targetUrl =
+          "https://sahkotin.fi/prices?quarter&fix&vat&start=" +
+          startISO +
+          "&end=2026-12-31T22:00:00.000Z";
+        const response = await fetch(targetUrl);
+        if (response.ok) {
+          const data = await response.json();
+          let total = 0;
+
+          const pricesArray = [];
+          for (let i = 0; i < data.prices.length; i++) {
+            value = data.prices[i].value;
+            pricesArray.push(value);
+            total += value;
+          }
+          const maxPrice = Math.max(...pricesArray);
+          const minPrice = Math.min(...pricesArray);
+          const avgPrice = total / pricesArray.length;
+
+          for (let i = 0; i < data.prices.length; i++) {
+            const element = document.createElement("tr");
+            element.setAttribute("id", i);
+
+            let price = data.prices[i].value;
+            let dateValue = data.prices[i].date;
+
+            const intervalDate = new Date(dateValue);
+            const intervalTime = intervalDate.toLocaleTimeString("fi-FI", {
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+
+            let row =
+              "<td>" +
+              intervalTime+
+              "</td><td>" +
+              price.toFixed(2) +
+              "</td>";
+            var tbody = document.querySelector("#priceTable tbody");
+            var tr = document.createElement("tr");
+            tr.setAttribute("id", "tr" + intervalTime);
+
+            tr.innerHTML = row;
+            tbody.appendChild(tr);
+          }
+          document.getElementById("maxPriceText").innerHTML =
+            maxPrice.toFixed(2);
+          document.getElementById("minPriceText").innerHTML =
+            minPrice.toFixed(2);
+          document.getElementById("avgPriceText").innerHTML =
+            avgPrice.toFixed(2);
+        }
+        const current = document.getElementById("tr" + currentTime);
+        current.classList.add("current");
+        setTimeout(function () {
+          current.scrollIntoView({ behavior: "smooth", inline: "center" });
+        }, 400);
+      }
+
+      async function fetchPricesTableHour() {
         const start = new Date(Date.now());
         start.setHours(00);
         start.setMinutes(00);
