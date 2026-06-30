@@ -1008,16 +1008,32 @@
               hour: "2-digit",
               minute: "2-digit",
             });
+            const intervalHour = parseInt(intervalDate.toLocaleTimeString("fi-FI", {
+              hour: "numeric",
+            }));
+
+            let value = price + dayPrice;
+            let icon = "☀️";
+            if (nightPriceTimes.includes(intervalHour)) {
+              value = price + nightPrice;
+              icon = "🌙";
+            }
 
             let row =
-              "<td>" +
+              '<td class="icon">' +
+              icon +
+              "</td><td>" +
               intervalTime+
               "</td><td>" +
               price.toFixed(2) +
-              "</td>";
+              "</td><td>"+
+              value.toFixed(2)+"</td>";
             var tbody = document.querySelector("#priceTable tbody");
             var tr = document.createElement("tr");
             tr.setAttribute("id", "tr" + intervalTime);
+            if (nightPriceTimes.includes(intervalHour)) {
+              tr.classList.add("nightRow");
+            }
 
             tr.innerHTML = row;
             tbody.appendChild(tr);
